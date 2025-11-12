@@ -44,6 +44,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true // Enable BuildConfig generation
     }
 
     packaging {
@@ -78,7 +79,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit.kotlinx.serialization.converter)
-    debugImplementation(libs.okhttp.logging.interceptor) // Debug builds only
+    debugImplementation(libs.okhttp.logging.interceptor)
 
     // Persistence
     implementation(libs.androidx.datastore.preferences)
