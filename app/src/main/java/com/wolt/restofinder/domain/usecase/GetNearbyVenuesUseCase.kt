@@ -14,12 +14,11 @@ class GetNearbyVenuesUseCase @Inject constructor(
     /**
      * Get up to 15 nearby venues for the location.
      */
-    operator fun invoke(location: Location): Flow<Result<List<Venue>>> {
-        return venueRepository.getNearbyVenues(location.latitude, location.longitude)
+    operator fun invoke(location: Location): Flow<Result<List<Venue>>> =
+        venueRepository.getNearbyVenues(location.latitude, location.longitude)
             .map { result ->
                 result.map { venues ->
                     venues.take(15) // Business rule: limit to 15 venues
                 }
             }
-    }
 }
