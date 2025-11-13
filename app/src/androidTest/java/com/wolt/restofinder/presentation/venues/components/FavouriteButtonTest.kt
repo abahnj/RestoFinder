@@ -1,5 +1,9 @@
 package com.wolt.restofinder.presentation.venues.components
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -67,9 +71,9 @@ class FavouriteButtonTest {
 
     @Test
     fun toggleChangesAccessibilityLabel() {
-        var isFavourite = false
-
         composeTestRule.setContent {
+            var isFavourite by remember { mutableStateOf(false) }
+
             FavouriteButton(
                 isFavourite = isFavourite,
                 onClick = { isFavourite = !isFavourite }
