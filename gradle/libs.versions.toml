@@ -29,6 +29,7 @@ coroutines = "1.10.2"
 
 # Image Loading
 coil = "2.7.0"
+shimmer = "1.3.3"
 
 # Logging
 timber = "5.0.1"
@@ -80,6 +81,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 # Image Loading
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 
 # Logging
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

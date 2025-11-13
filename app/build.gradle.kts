@@ -90,6 +90,7 @@ dependencies {
 
     // Image Loading
     implementation(libs.coil.compose)
+    implementation(libs.compose.shimmer)
 
     // Logging
     implementation(libs.timber)

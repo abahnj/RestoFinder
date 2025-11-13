@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Resto Finder</string>
+
+    <!-- Empty State -->
+    <string name="empty_state_no_restaurants">No restaurants found nearby</string>
+    <string name="empty_state_try_different_location">Try a different location</string>
+    <string name="empty_state_icon_description">No results found</string>
+
+    <!-- Error State -->
+    <string name="error_state_icon_description">Error occurred</string>
+    <string name="error_state_retry">Retry</string>
+
+    <!-- Loading State -->
+    <string name="loading_state_description">Loading venues</string>
+    <string name="shimmer_card_description">Loading venue information</string>
 </resources>
