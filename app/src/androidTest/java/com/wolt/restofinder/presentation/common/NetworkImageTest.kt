@@ -2,6 +2,7 @@ package com.wolt.restofinder.presentation.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.assertIsDisplayed
@@ -22,10 +23,12 @@ class NetworkImageTest {
     @Test
     fun showsLoadingIndicatorWhileLoading() {
         composeTestRule.setContent {
-            NetworkImage(
-                imageUrl = "https://example.com/image.jpg",
-                contentDescription = "Test image"
-            )
+            MaterialTheme {
+                NetworkImage(
+                    imageUrl = "https://example.com/image.jpg",
+                    contentDescription = "Test image"
+                )
+            }
         }
 
         composeTestRule
@@ -36,11 +39,13 @@ class NetworkImageTest {
     @Test
     fun showsBlurHashPlaceholderWhenProvided() {
         composeTestRule.setContent {
-            NetworkImage(
-                imageUrl = "https://example.com/image.jpg",
-                contentDescription = "Test image",
-                blurHash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj"
-            )
+            MaterialTheme {
+                NetworkImage(
+                    imageUrl = "https://example.com/image.jpg",
+                    contentDescription = "Test image",
+                    blurHash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+                )
+            }
         }
 
         composeTestRule.waitForIdle()
@@ -53,10 +58,12 @@ class NetworkImageTest {
     @Test
     fun showsErrorPlaceholderOnLoadFailure() {
         composeTestRule.setContent {
-            NetworkImage(
-                imageUrl = "invalid-url",
-                contentDescription = "Test image"
-            )
+            MaterialTheme {
+                NetworkImage(
+                    imageUrl = "invalid-url",
+                    contentDescription = "Test image"
+                )
+            }
         }
 
         composeTestRule.waitForIdle()
@@ -69,11 +76,13 @@ class NetworkImageTest {
     @Test
     fun hidesLoadingIndicatorWhenDisabled() {
         composeTestRule.setContent {
-            NetworkImage(
-                imageUrl = "https://example.com/image.jpg",
-                contentDescription = "Test image",
-                showLoadingIndicator = false
-            )
+            MaterialTheme {
+                NetworkImage(
+                    imageUrl = "https://example.com/image.jpg",
+                    contentDescription = "Test image",
+                    showLoadingIndicator = false
+                )
+            }
         }
 
         composeTestRule

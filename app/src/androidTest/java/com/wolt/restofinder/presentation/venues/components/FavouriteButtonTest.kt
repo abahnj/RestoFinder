@@ -1,5 +1,6 @@
 package com.wolt.restofinder.presentation.venues.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,10 +25,12 @@ class FavouriteButtonTest {
     @Test
     fun displaysFilledIconWhenFavourited() {
         composeTestRule.setContent {
-            FavouriteButton(
-                isFavourite = true,
-                onClick = {}
-            )
+            MaterialTheme {
+                FavouriteButton(
+                    isFavourite = true,
+                    onClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -39,10 +42,12 @@ class FavouriteButtonTest {
     @Test
     fun displaysOutlinedIconWhenNotFavourited() {
         composeTestRule.setContent {
-            FavouriteButton(
-                isFavourite = false,
-                onClick = {}
-            )
+            MaterialTheme {
+                FavouriteButton(
+                    isFavourite = false,
+                    onClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -56,10 +61,12 @@ class FavouriteButtonTest {
         var clickCount = 0
 
         composeTestRule.setContent {
-            FavouriteButton(
-                isFavourite = false,
-                onClick = { clickCount++ }
-            )
+            MaterialTheme {
+                FavouriteButton(
+                    isFavourite = false,
+                    onClick = { clickCount++ }
+                )
+            }
         }
 
         composeTestRule
@@ -72,12 +79,14 @@ class FavouriteButtonTest {
     @Test
     fun toggleChangesAccessibilityLabel() {
         composeTestRule.setContent {
-            var isFavourite by remember { mutableStateOf(false) }
+            MaterialTheme {
+                var isFavourite by remember { mutableStateOf(false) }
 
-            FavouriteButton(
-                isFavourite = isFavourite,
-                onClick = { isFavourite = !isFavourite }
-            )
+                FavouriteButton(
+                    isFavourite = isFavourite,
+                    onClick = { isFavourite = !isFavourite }
+                )
+            }
         }
 
         composeTestRule
@@ -100,11 +109,13 @@ class FavouriteButtonTest {
         var clickCount = 0
 
         composeTestRule.setContent {
-            FavouriteButton(
-                isFavourite = false,
-                onClick = { clickCount++ },
-                enabled = false
-            )
+            MaterialTheme {
+                FavouriteButton(
+                    isFavourite = false,
+                    onClick = { clickCount++ },
+                    enabled = false
+                )
+            }
         }
 
         composeTestRule

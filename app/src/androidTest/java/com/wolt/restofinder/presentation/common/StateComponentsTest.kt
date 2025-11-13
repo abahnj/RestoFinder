@@ -3,6 +3,7 @@ package com.wolt.restofinder.presentation.common
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionContains
@@ -36,7 +37,9 @@ class StateComponentsTest {
     @Test
     fun loadingState_displaysShimmerCards() {
         composeTestRule.setContent {
-            LoadingState()
+            MaterialTheme {
+                LoadingState()
+            }
         }
 
         composeTestRule.onNodeWithTag("LoadingState").assertIsDisplayed()
@@ -46,7 +49,9 @@ class StateComponentsTest {
     @Test
     fun loadingState_rendersWithCustomItemCount() {
         composeTestRule.setContent {
-            LoadingState(itemCount = 5)
+            MaterialTheme {
+                LoadingState(itemCount = 5)
+            }
         }
 
         composeTestRule.onNodeWithTag("LoadingState").assertIsDisplayed()
@@ -57,7 +62,9 @@ class StateComponentsTest {
     @Test
     fun loadingState_isScrollable() {
         composeTestRule.setContent {
-            LoadingState(itemCount = 20)
+            MaterialTheme {
+                LoadingState(itemCount = 20)
+            }
         }
 
         composeTestRule.onNodeWithTag("LoadingState")
@@ -70,7 +77,9 @@ class StateComponentsTest {
     @Test
     fun shimmerVenueCard_displaysAllPlaceholderElements() {
         composeTestRule.setContent {
-            ShimmerVenueCard()
+            MaterialTheme {
+                ShimmerVenueCard()
+            }
         }
 
         with(composeTestRule) {
@@ -87,10 +96,12 @@ class StateComponentsTest {
     @Test
     fun errorState_displaysAllRequiredElements() {
         composeTestRule.setContent {
-            ErrorState(
-                message = "Network error occurred",
-                onRetry = {}
-            )
+            MaterialTheme {
+                ErrorState(
+                    message = "Network error occurred",
+                    onRetry = {}
+                )
+            }
         }
 
         with(composeTestRule) {
@@ -108,11 +119,13 @@ class StateComponentsTest {
     @Test
     fun errorState_withTitle_displaysTitle() {
         composeTestRule.setContent {
-            ErrorState(
-                title = "Connection Failed",
-                message = "Please check your internet",
-                onRetry = {}
-            )
+            MaterialTheme {
+                ErrorState(
+                    title = "Connection Failed",
+                    message = "Please check your internet",
+                    onRetry = {}
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("ErrorTitle")
@@ -125,10 +138,12 @@ class StateComponentsTest {
         var retryCount = 0
 
         composeTestRule.setContent {
-            ErrorState(
-                message = "Error",
-                onRetry = { retryCount++ }
-            )
+            MaterialTheme {
+                ErrorState(
+                    message = "Error",
+                    onRetry = { retryCount++ }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("RetryButton").performClick()
@@ -142,10 +157,12 @@ class StateComponentsTest {
         var retryCount = 0
 
         composeTestRule.setContent {
-            ErrorState(
-                message = "Error",
-                onRetry = { retryCount++ }
-            )
+            MaterialTheme {
+                ErrorState(
+                    message = "Error",
+                    onRetry = { retryCount++ }
+                )
+            }
         }
 
         repeat(3) {
@@ -159,11 +176,13 @@ class StateComponentsTest {
     @Test
     fun errorState_withoutRetryButton_hidesButton() {
         composeTestRule.setContent {
-            ErrorState(
-                message = "Feature not available",
-                onRetry = {},
-                showRetryButton = false
-            )
+            MaterialTheme {
+                ErrorState(
+                    message = "Feature not available",
+                    onRetry = {},
+                    showRetryButton = false
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("RetryButton").assertDoesNotExist()
@@ -175,7 +194,9 @@ class StateComponentsTest {
     @Test
     fun emptyState_displaysAllElements() {
         composeTestRule.setContent {
-            EmptyState()
+            MaterialTheme {
+                EmptyState()
+            }
         }
 
         with(composeTestRule) {
@@ -189,7 +210,9 @@ class StateComponentsTest {
     @Test
     fun emptyState_isNotInteractive() {
         composeTestRule.setContent {
-            EmptyState()
+            MaterialTheme {
+                EmptyState()
+            }
         }
 
         composeTestRule.onNodeWithTag("EmptyState")

@@ -1,5 +1,6 @@
 package com.wolt.restofinder.presentation.venues.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
@@ -35,10 +36,12 @@ class VenueCardTest {
     @Test
     fun displaysVenueNameAndDescription() {
         composeTestRule.setContent {
-            VenueCard(
-                venue = baseVenue,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = baseVenue,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -57,10 +60,12 @@ class VenueCardTest {
         val venueWithoutDescription = baseVenue.copy(description = null)
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = venueWithoutDescription,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = venueWithoutDescription,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -77,10 +82,12 @@ class VenueCardTest {
         val venueWithEmptyDescription = baseVenue.copy(description = "")
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = venueWithEmptyDescription,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = venueWithEmptyDescription,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -94,10 +101,12 @@ class VenueCardTest {
         val venueWithLongName = baseVenue.copy(name = longName)
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = venueWithLongName,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = venueWithLongName,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -114,10 +123,12 @@ class VenueCardTest {
         )
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = specialVenue,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = specialVenue,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -136,12 +147,14 @@ class VenueCardTest {
         var clickedVenueId: String? = null
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = baseVenue,
-                onFavouriteClick = { venueId ->
-                    clickedVenueId = venueId
-                }
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = baseVenue,
+                    onFavouriteClick = { venueId ->
+                        clickedVenueId = venueId
+                    }
+                )
+            }
         }
 
         composeTestRule
@@ -158,10 +171,12 @@ class VenueCardTest {
         val favouritedVenue = baseVenue.copy(isFavourite = true)
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = favouritedVenue,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = favouritedVenue,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
@@ -174,10 +189,12 @@ class VenueCardTest {
         var clickCount = 0
 
         composeTestRule.setContent {
-            VenueCard(
-                venue = baseVenue,
-                onFavouriteClick = { clickCount++ }
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = baseVenue,
+                    onFavouriteClick = { clickCount++ }
+                )
+            }
         }
 
         with(composeTestRule.onNodeWithTag("FavouriteButton")) {
@@ -195,10 +212,12 @@ class VenueCardTest {
     @Test
     fun allInteractiveElementsHaveContentDescriptions() {
         composeTestRule.setContent {
-            VenueCard(
-                venue = baseVenue,
-                onFavouriteClick = {}
-            )
+            MaterialTheme {
+                VenueCard(
+                    venue = baseVenue,
+                    onFavouriteClick = {}
+                )
+            }
         }
 
         composeTestRule
