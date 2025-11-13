@@ -22,49 +22,41 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideJson(): Json {
-        return Json {
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-        }
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(ErrorInterceptor())
-            .apply {
-                if (com.wolt.restofinder.BuildConfig.DEBUG) {
-                    addInterceptor(HttpLoggingInterceptor { message ->
-                        Timber.tag("OkHttp").d(message)
-                    }.apply {
-                        level = HttpLoggingInterceptor.Level.BODY
-                    })
-                }
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(ErrorInterceptor())
+        .apply {
+            if (com.wolt.restofinder.BuildConfig.DEBUG) {
+                addInterceptor(HttpLoggingInterceptor { message ->
+                    Timber.tag("OkHttp").d(message)
+                }.apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
             }
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .build()
-    }
+        }
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .build()
 
     @Provides
     @Singleton
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         json: Json
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://restaurant-api.wolt.com/")
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl("https://restaurant-api.wolt.com/")
+        .client(okHttpClient)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .build()
 
     @Provides
     @Singleton
-    fun provideWoltApi(retrofit: Retrofit): WoltApi {
-        return retrofit.create(WoltApi::class.java)
-    }
+    fun provideWoltApi(retrofit: Retrofit): WoltApi = retrofit.create(WoltApi::class.java)
 }

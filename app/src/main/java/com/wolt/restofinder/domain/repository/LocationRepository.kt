@@ -7,7 +7,7 @@ interface LocationRepository {
 
     /**
      * Get a flow of location updates.
-     * Emits 9 predefined Helsinki coordinates every 10 seconds.
+     * Emits 9 predefined Helsinki coordinates at specified interval.
      */
-    fun getLocationUpdates(): Flow<Location>
+    fun getLocationUpdates(delayMillis: Long = 10_000): Flow<Location>
 }
