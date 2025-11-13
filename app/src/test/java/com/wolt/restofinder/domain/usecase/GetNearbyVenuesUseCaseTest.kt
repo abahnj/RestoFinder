@@ -22,7 +22,7 @@ class GetNearbyVenuesUseCaseTest {
     @Test
     fun `invoke limits venues to 15 maximum`() = runTest {
         val venues = (1..20).map { createVenue(it.toString()) }
-        every { mockRepository.getNearbyVenues(any(), any()) } returns
+        every { mockRepository.observeNearbyVenuesWithFavourites(any(), any()) } returns
             flowOf(Result.success(venues))
 
         useCase(testLocation).test {
@@ -36,7 +36,7 @@ class GetNearbyVenuesUseCaseTest {
     @Test
     fun `invoke returns all venues when fewer than 15`() = runTest {
         val venues = (1..10).map { createVenue(it.toString()) }
-        every { mockRepository.getNearbyVenues(any(), any()) } returns
+        every { mockRepository.observeNearbyVenuesWithFavourites(any(), any()) } returns
             flowOf(Result.success(venues))
 
         useCase(testLocation).test {
@@ -54,7 +54,7 @@ class GetNearbyVenuesUseCaseTest {
             createVenue("2"),
             createVenue("3")
         )
-        every { mockRepository.getNearbyVenues(any(), any()) } returns
+        every { mockRepository.observeNearbyVenuesWithFavourites(any(), any()) } returns
             flowOf(Result.success(venues))
 
         useCase(testLocation).test {
@@ -67,7 +67,7 @@ class GetNearbyVenuesUseCaseTest {
     @Test
     fun `invoke propagates errors from repository`() = runTest {
         val exception = RuntimeException("Network error")
-        every { mockRepository.getNearbyVenues(any(), any()) } returns
+        every { mockRepository.observeNearbyVenuesWithFavourites(any(), any()) } returns
             flowOf(Result.failure(exception))
 
         useCase(testLocation).test {

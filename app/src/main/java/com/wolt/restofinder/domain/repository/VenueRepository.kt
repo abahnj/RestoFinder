@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 interface VenueRepository {
 
     /**
-     * Get nearby venues for the location.
+     * Observe nearby venues with favourite status merged.
      * Emits updated list when favourites change.
      */
-    fun getNearbyVenues(latitude: Double, longitude: Double): Flow<Result<List<Venue>>>
+    fun observeNearbyVenuesWithFavourites(latitude: Double, longitude: Double): Flow<Result<List<Venue>>>
 
     /**
      * Toggle favourite status for a venue.
