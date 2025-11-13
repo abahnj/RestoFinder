@@ -1,4 +1,4 @@
-package com.wolt.restofinder.ui.theme
+package com.wolt.restofinder.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
