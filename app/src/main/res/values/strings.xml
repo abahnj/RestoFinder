@@ -13,4 +13,13 @@
     <!-- Loading State -->
     <string name="loading_state_description">Loading venues</string>
     <string name="shimmer_card_description">Loading venue information</string>
+
+    <!-- Venue List Screen -->
+    <string name="venue_list_title">Nearby Restaurants</string>
+    <string name="venue_list_content_description">List of nearby restaurants</string>
+
+    <!-- Snackbar Messages -->
+    <string name="favourite_added">Added to favourites</string>
+    <string name="favourite_removed">Removed from favourites</string>
+    <string name="action_undo">Undo</string>
 </resources>

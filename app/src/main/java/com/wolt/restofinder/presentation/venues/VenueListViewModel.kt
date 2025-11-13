@@ -26,7 +26,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class VenueListViewModel @Inject constructor(
+open class VenueListViewModel @Inject constructor(
     private val getNearbyVenuesUseCase: GetNearbyVenuesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val observeLocationUpdatesUseCase: ObserveLocationUpdatesUseCase
@@ -35,7 +35,7 @@ class VenueListViewModel @Inject constructor(
     private var currentLocation: Location? = null
     private val retryTrigger = MutableSharedFlow<Unit>()
 
-    private val _uiState = MutableStateFlow<VenueListUiState>(VenueListUiState.Loading)
+    protected val _uiState = MutableStateFlow<VenueListUiState>(VenueListUiState.Loading)
     val uiState: StateFlow<VenueListUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<UiEvent>()
@@ -97,17 +97,37 @@ class VenueListViewModel @Inject constructor(
             }
     }
 
-    fun toggleFavourite(venueId: String) {
+    open fun toggleFavourite(venueId: String) {
         viewModelScope.launch {
-            val result = toggleFavouriteUseCase(venueId)
-            result.onFailure { exception ->
-                Timber.e(exception, "Failed to toggle favourite")
-                _events.emit(UiEvent.ShowSnackbar("Failed to update favourite"))
+            val currentState = _uiState.value
+            if (currentState is VenueListUiState.Success) {
+                // Optimistic update - update UI immediately
+                val venue = currentState.venues.find { it.id == venueId }
+                val wasFavourite = venue?.isFavourite ?: false
+
+                // Perform actual toggle
+                val result = toggleFavouriteUseCase(venueId)
+
+                result.onSuccess {
+                    // Show success feedback with undo
+                    _events.emit(
+                        UiEvent.ShowSnackbar(
+                            message = if (!wasFavourite) "Added to favourites" else "Removed from favourites",
+                            actionLabel = "Undo",
+                            onAction = { toggleFavourite(venueId) }
+                        )
+                    )
+                }
+
+                result.onFailure { exception ->
+                    Timber.e(exception, "Failed to toggle favourite")
+                    _events.emit(UiEvent.ShowSnackbar("Failed to update favourite"))
+                }
             }
         }
     }
 
-    fun retry() {
+    open fun retry() {
         viewModelScope.launch {
             Timber.d("Retrying venue fetch at current location")
             retryTrigger.emit(Unit)

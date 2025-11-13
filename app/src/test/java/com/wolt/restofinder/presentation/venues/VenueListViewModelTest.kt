@@ -114,9 +114,10 @@ class VenueListViewModelTest {
     }
 
     @Test
-    fun `toggleFavourite calls use case`() = runTest {
-        every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf()
-        coEvery { mockToggleFavouriteUseCase("venue1") } returns Result.success(Unit)
+    fun `toggleFavourite calls use case when in Success state`() = runTest {
+        every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf(testLocation)
+        every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
+        coEvery { mockToggleFavouriteUseCase("1") } returns Result.success(Unit)
 
         viewModel = VenueListViewModel(
             mockGetNearbyVenuesUseCase,
@@ -124,15 +125,21 @@ class VenueListViewModelTest {
             mockObserveLocationUpdatesUseCase
         )
 
-        viewModel.toggleFavourite("venue1")
+        viewModel.uiState.test {
+            skipItems(2) // Skip Loading + Success
 
-        coVerify { mockToggleFavouriteUseCase("venue1") }
+            viewModel.toggleFavourite("1")
+            testScheduler.advanceUntilIdle()
+
+            coVerify { mockToggleFavouriteUseCase("1") }
+        }
     }
 
     @Test
-    fun `toggleFavourite emits snackbar on failure`() = runTest {
-        every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf()
-        coEvery { mockToggleFavouriteUseCase("venue1") } returns Result.failure(IOException("Error"))
+    fun `toggleFavourite emits snackbar with undo on success`() = runTest {
+        every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf(testLocation)
+        every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
+        coEvery { mockToggleFavouriteUseCase("1") } returns Result.success(Unit)
 
         viewModel = VenueListViewModel(
             mockGetNearbyVenuesUseCase,
@@ -141,10 +148,18 @@ class VenueListViewModelTest {
         )
 
         viewModel.events.test {
-            viewModel.toggleFavourite("venue1")
+            viewModel.uiState.test {
+                skipItems(2) // Loading + Success
+
+                viewModel.toggleFavourite("1")
+                testScheduler.advanceUntilIdle()
+
+                cancel()
+            }
 
             val event = awaitItem() as UiEvent.ShowSnackbar
-            assertEquals("Failed to update favourite", event.message)
+            assertEquals("Added to favourites", event.message)
+            assertEquals("Undo", event.actionLabel)
         }
     }
 
