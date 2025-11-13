@@ -46,6 +46,12 @@ class VenueRepositoryImpl @Inject constructor(
             api.getRestaurants(latitude, longitude)
         }
 
+        // TODO: Production - Add robust section parsing
+        // 1. Add 'name' field back to SectionDto
+        // 2. Find section by name: sections.find { it.name.contains("restaurant") }
+        // 3. Fallback to sections.getOrNull(1) if not found
+        // 4. Throw clear error if no section found
+        // This makes code resilient to API changes (section order, naming)
         val restaurantItems = response.sections[1].items
         Timber.i("Successfully fetched ${restaurantItems.size} venues")
 
