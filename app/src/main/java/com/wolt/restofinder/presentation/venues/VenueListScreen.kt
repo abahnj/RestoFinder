@@ -1,10 +1,8 @@
 package com.wolt.restofinder.presentation.venues
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,7 +35,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -95,16 +92,9 @@ fun VenueListScreen(
         }
     }
 
-    // Auto-scroll to top when new data is loaded
-    val shouldScrollToTop by remember {
-        derivedStateOf {
-            uiState is VenueListUiState.Success &&
-            listState.firstVisibleItemIndex > 5
-        }
-    }
-
-    LaunchedEffect(uiState) {
-        if (shouldScrollToTop && uiState is VenueListUiState.Success) {
+    // Auto-scroll to top when location changes
+    LaunchedEffect(currentLocation) {
+        if (currentLocation != null && listState.firstVisibleItemIndex > 5) {
             listState.animateScrollToItem(0)
         }
     }
@@ -197,72 +187,71 @@ fun VenueListScreen(
             .testTag("VenueListScreen")
             .nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Content area with padding for pinned location display
-            // Crossfade only on state type changes (Loading/Success/Error), not data updates
-            val stateType = remember(uiState) {
-                when (uiState) {
-                    is VenueListUiState.Loading -> "loading"
-                    is VenueListUiState.Success -> "success"
-                    is VenueListUiState.Error -> "error"
-                }
-            }
-
-            Crossfade(
-                targetState = stateType,
-                label = "VenueListState",
-                animationSpec = tween(durationMillis = 300),
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(top = 112.dp)  // Space for pinned AnimatedLocationDisplay
-            ) { _ ->
-                when (val state = uiState) {
-                    is VenueListUiState.Loading -> {
-                        LoadingState(
-                            modifier = Modifier.testTag("VenueListLoading")
-                        )
-                    }
-
-                    is VenueListUiState.Success -> {
-                        if (state.venues.isEmpty()) {
-                            EmptyState(
-                                modifier = Modifier.testTag("VenueListEmpty")
-                            )
-                        } else {
-                            val onFavouriteClick = remember { viewModel::toggleFavourite }
-                            VenueList(
-                                venues = state.venues,
-                                listState = listState,
-                                onFavouriteClick = onFavouriteClick
-                            )
-                        }
-                    }
-
-                    is VenueListUiState.Error -> {
-                        ErrorState(
-                            message = state.message,
-                            onRetry = viewModel::retry,
-                            modifier = Modifier.testTag("VenueListError")
-                        )
-                    }
-                }
-            }
-
-            // Pinned AnimatedLocationDisplay at top
-            // Stays in place while TopAppBar scrolls away
-            Column(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            // Pinned location display
+            AnimatedLocationDisplay(
+                address = currentLocation?.toAddress() ?: "Discovering restaurants nearby...",
+                coordinates = currentLocation?.let { it.latitude to it.longitude } ?: (0.0 to 0.0),
+                isAnimating = currentLocation != null,
+                locationKey = currentLocation ?: Unit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = paddingValues.calculateTopPadding())
                     .background(MaterialTheme.colorScheme.surface)
-            ) {
-                AnimatedLocationDisplay(
-                    address = currentLocation?.toAddress() ?: "Discovering restaurants nearby...",
-                    coordinates = currentLocation?.let { it.latitude to it.longitude } ?: (0.0 to 0.0),
-                    isAnimating = currentLocation != null,
-                    locationKey = currentLocation ?: Unit,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            // Section header
+            Text(
+                text = "Showing places near you",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            // Content area
+            when (val state = uiState) {
+                is VenueListUiState.Loading -> {
+                    LoadingState(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag("VenueListLoading")
+                    )
+                }
+
+                is VenueListUiState.Success -> {
+                    if (state.venues.isEmpty()) {
+                        EmptyState(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .testTag("VenueListEmpty")
+                        )
+                    } else {
+                        val onFavouriteClick = remember { viewModel::toggleFavourite }
+                        VenueList(
+                            venues = state.venues,
+                            listState = listState,
+                            onFavouriteClick = onFavouriteClick,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
+                is VenueListUiState.Error -> {
+                    ErrorState(
+                        message = state.message,
+                        onRetry = viewModel::retry,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag("VenueListError")
+                    )
+                }
             }
         }
     }
