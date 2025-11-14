@@ -33,7 +33,6 @@ import com.wolt.restofinder.util.BlurHashDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @Composable
 fun NetworkImage(
@@ -51,12 +50,7 @@ fun NetworkImage(
         blurHash?.let { hash ->
             scope.launch {
                 blurHashBitmap = withContext(Dispatchers.Default) {
-                    try {
-                        BlurHashDecoder.decode(hash, width = 32, height = 32)
-                    } catch (e: Exception) {
-                        Timber.e(e, "Error decoding blur hash")
-                        null
-                    }
+                    BlurHashDecoder.decode(blurHash = hash, width = 32, height = 32)
                 }
             }
         }
@@ -74,7 +68,8 @@ fun NetworkImage(
         loading = {
             LoadingPlaceholder(
                 blurHashBitmap = blurHashBitmap,
-                showLoadingIndicator = showLoadingIndicator
+                showLoadingIndicator = showLoadingIndicator,
+                hasBlurHash = blurHash != null
             )
         },
         error = {
@@ -86,7 +81,8 @@ fun NetworkImage(
 @Composable
 private fun LoadingPlaceholder(
     blurHashBitmap: Bitmap?,
-    showLoadingIndicator: Boolean
+    showLoadingIndicator: Boolean,
+    hasBlurHash: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -117,7 +113,8 @@ private fun LoadingPlaceholder(
             }
         }
 
-        if (showLoadingIndicator) {
+        // Only show loading indicator if no blurhash is provided
+        if (showLoadingIndicator && !hasBlurHash) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(40.dp)
