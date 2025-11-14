@@ -1,8 +1,8 @@
 package com.wolt.restofinder.presentation.venues.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -27,7 +27,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 
 @Composable
 fun FavouriteButton(
@@ -37,39 +36,38 @@ fun FavouriteButton(
     enabled: Boolean = true
 ) {
     val haptic = LocalHapticFeedback.current
-    var isAnimating by remember { mutableStateOf(false) }
-
-    val scale by animateFloatAsState(
-        targetValue = when {
-            isAnimating -> 1.4f
-            else -> 1f
-        },
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "FavouriteButtonScale"
-    )
-
-    val iconColor by animateColorAsState(
-        targetValue = when {
-            isFavourite -> MaterialTheme.colorScheme.error
-            else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        },
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "FavouriteButtonColor"
-    )
+    val scale = remember { Animatable(1f) }
+    var previousFavourite by remember { mutableStateOf(isFavourite) }
 
     LaunchedEffect(isFavourite) {
-        if (isFavourite) {
-            isAnimating = true
-            delay(100)
-            isAnimating = false
+        if (isFavourite && !previousFavourite) {
+            // Pulse sequence: scale up then back to normal
+            scale.animateTo(
+                targetValue = 1.4f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
         }
+        previousFavourite = isFavourite
     }
+
+    val iconColor by animateColorAsState(
+        targetValue = if (isFavourite) {
+            MaterialTheme.colorScheme.error
+        } else {
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        },
+        label = "FavouriteButtonColor"
+    )
 
     IconButton(
         onClick = {
@@ -99,7 +97,7 @@ fun FavouriteButton(
             contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
-                .scale(scale) // Scale only icon, not button
+                .scale(scale.value)
         )
     }
 }

@@ -199,15 +199,24 @@ fun VenueListScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             // Content area with padding for pinned location display
+            // Crossfade only on state type changes (Loading/Success/Error), not data updates
+            val stateType = remember(uiState) {
+                when (uiState) {
+                    is VenueListUiState.Loading -> "loading"
+                    is VenueListUiState.Success -> "success"
+                    is VenueListUiState.Error -> "error"
+                }
+            }
+
             Crossfade(
-                targetState = uiState,
+                targetState = stateType,
                 label = "VenueListState",
                 animationSpec = tween(durationMillis = 300),
                 modifier = Modifier
                     .padding(paddingValues)
                     .padding(top = 112.dp)  // Space for pinned AnimatedLocationDisplay
-            ) { state ->
-                when (state) {
+            ) { _ ->
+                when (val state = uiState) {
                     is VenueListUiState.Loading -> {
                         LoadingState(
                             modifier = Modifier.testTag("VenueListLoading")
