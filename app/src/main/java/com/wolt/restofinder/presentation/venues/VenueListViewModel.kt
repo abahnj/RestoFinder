@@ -38,6 +38,9 @@ open class VenueListViewModel @Inject constructor(
     protected val _uiState = MutableStateFlow<VenueListUiState>(VenueListUiState.Loading)
     val uiState: StateFlow<VenueListUiState> = _uiState.asStateFlow()
 
+    private val _currentLocation = MutableStateFlow<Location?>(null)
+    val currentLocationFlow: StateFlow<Location?> = _currentLocation.asStateFlow()
+
     private val _events = MutableSharedFlow<UiEvent>()
     val events = _events.asSharedFlow()
 
@@ -52,7 +55,8 @@ open class VenueListViewModel @Inject constructor(
                 observeLocationUpdatesUseCase()
                     .onEach { location ->
                         currentLocation = location
-                        Timber.d("Location changed: ${location.latitude}, ${location.longitude}")
+                        _currentLocation.value = location
+                        Timber.d("Location emitted: ${location.latitude}, ${location.longitude}")
                     },
                 retryTrigger.map {
                     currentLocation ?: Location(0.0, 0.0)
