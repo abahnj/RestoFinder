@@ -61,7 +61,6 @@ fun AnimatedLocationDisplay(
     modifier: Modifier = Modifier,
     isAnimating: Boolean = true,
     locationKey: Any = Unit,  // Triggers animation reset when changed
-    onClick: () -> Unit = {}
 ) {
     val progress = remember { Animatable(0f) }
     val primaryColor = MaterialTheme.colorScheme.primary
@@ -72,13 +71,12 @@ fun AnimatedLocationDisplay(
 
     // Adjust colors for dark mode visibility
     val pathBackgroundColor = if (isDarkMode) {
-        Color.White.copy(alpha = 0.3f)  // Light gray in dark mode
+        Color.White.copy(alpha = 0.3f)
     } else {
-        Color.Gray.copy(alpha = 0.5f)   // Dark gray in light mode
+        Color.Gray.copy(alpha = 0.5f)
     }
 
     // 10-second animation synced with ViewModel location emissions
-    // Resets to 0% when locationKey changes (new location emitted)
     LaunchedEffect(locationKey, isAnimating) {
         if (isAnimating) {
             progress.snapTo(0f)
@@ -113,7 +111,7 @@ fun AnimatedLocationDisplay(
                 .then(
                     if (isDarkMode) {
                         Modifier.graphicsLayer {
-                            // Invert colors for dark mode (like Google Maps)
+                            // Invert colors for dark mode
                             colorFilter = androidx.compose.ui.graphics.ColorFilter.colorMatrix(
                                 androidx.compose.ui.graphics.ColorMatrix().apply {
                                     setToScale(-1f, -1f, -1f, 1f)  // Invert RGB, keep Alpha
@@ -137,18 +135,7 @@ fun AnimatedLocationDisplay(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Static blue location pin dot
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(primaryColor)
-                    .testTag("LocationPin")
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // Address and coordinates - centered
+            // Address and coordinates
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -161,7 +148,7 @@ fun AnimatedLocationDisplay(
                 )
 
                 Text(
-                    text = String.format("%.6f, %.6f", coordinates.first, coordinates.second),
+                    text = String.format(java.util.Locale.US, "%.6f, %.6f", coordinates.first, coordinates.second),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -215,7 +202,7 @@ fun AnimatedLocationDisplay(
                 try {
                     pathMeasure.getSegment(0f, animatedLength, animatedPath, true)
                 } catch (e: Exception) {
-                    // Handle edge cases silently (invalid path segments)
+                    Timber.e(e, "Error getting animated path segment")
                 }
             }
 
@@ -255,10 +242,6 @@ fun AnimatedLocationDisplay(
 
 /**
  * Creates the border path with rounded corners and bottom cutout.
- *
- * Path starts at left center (where the static dot is) and goes clockwise
- * around the border, creating a smooth shape with rounded corners and a
- * wavy cutout at the bottom center for the chevron icon.
  */
 private fun createMapBackgroundPath(
     width: Float,
@@ -317,7 +300,7 @@ private fun createMapBackgroundPath(
             forceMoveTo = false
         )
 
-        // Right edge DOWN to bottom-right corner
+        // Right edge down to bottom-right corner
         lineTo(w + inset, h - cr + inset)
 
         // Bottom-right corner arc
@@ -335,10 +318,6 @@ private fun createMapBackgroundPath(
 
         // Bottom edge to cutout start (moving RIGHT TO LEFT)
         lineTo(cutoutEnd, h + inset)
-
-        // SVG-matched cutout curves (extracted from map_background.xml)
-        // SVG uses: c-16.1,0 -24.27,-19.13 -48.06,-19.13 S169.32,96 151.89,96
-        // Proportions: CP1 at 33.8% inward, CP2 at 51% inward from half-width
 
         // Right side curve: from cutoutEnd to centerX
         cubicTo(

@@ -31,15 +31,15 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(ErrorInterceptor())
-        .apply {
-            if (com.wolt.restofinder.BuildConfig.DEBUG) {
-                addInterceptor(HttpLoggingInterceptor { message ->
-                    Timber.tag("OkHttp").d(message)
-                }.apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
-            }
-        }
+//        .apply {
+//            if (com.wolt.restofinder.BuildConfig.DEBUG) {
+//                addInterceptor(HttpLoggingInterceptor { message ->
+//                    Timber.tag("OkHttp").d(message)
+//                }.apply {
+//                    level = HttpLoggingInterceptor.Level.BODY
+//                })
+//            }
+//        }
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
