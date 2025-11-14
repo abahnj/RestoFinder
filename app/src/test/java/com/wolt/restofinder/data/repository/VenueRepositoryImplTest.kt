@@ -107,8 +107,9 @@ class VenueRepositoryImplTest {
 
     private fun createMockResponse() = WoltApiResponseDto(
         sections = listOf(
-            SectionDto(items = emptyList()), // Categories section
+            SectionDto(name = "restaurants_page_categories", items = emptyList()), // Categories section
             SectionDto(
+                name = "restaurants-delivering-venues",
                 items = listOf(
                     RestaurantItemDto(
                         image = ImageDto("https://example.com/1.jpg", "hash1"),

@@ -29,7 +29,7 @@ class VenueRepositoryImpl @Inject constructor(
                 getFavouritesFlow().map { favouriteIds ->
                     Result.success(
                         restaurantItems.map { item ->
-                            item.toDomain(isFavourite = favouriteIds.contains(item.venue.id))
+                            item.toDomain(isFavourite = favouriteIds.contains(item.venue!!.id))
                         }
                     )
                 }
@@ -46,14 +46,16 @@ class VenueRepositoryImpl @Inject constructor(
             api.getRestaurants(latitude, longitude)
         }
 
-        // TODO: Production - Add robust section parsing
-        // 1. Add 'name' field back to SectionDto
-        // 2. Find section by name: sections.find { it.name.contains("restaurant") }
-        // 3. Fallback to sections.getOrNull(1) if not found
-        // 4. Throw clear error if no section found
-        // This makes code resilient to API changes (section order, naming)
-        val restaurantItems = response.sections[1].items
-        Timber.i("Successfully fetched ${restaurantItems.size} venues")
+        val restaurantSection = response.sections.find { section ->
+            section.name.equals("restaurants-delivering-venues", ignoreCase = true)
+        } ?: response.sections.getOrNull(1)
+
+        requireNotNull(restaurantSection) {
+            "No restaurant section found in API response. Available sections: ${response.sections.map { it.name }}"
+        }
+
+        val restaurantItems = restaurantSection.items.filter { it.venue != null }
+        Timber.i("Successfully fetched ${restaurantItems.size} venues from section '${restaurantSection.name}'")
 
         emit(restaurantItems)
     }
