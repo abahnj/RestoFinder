@@ -24,6 +24,7 @@ class AnimatedLocationDisplayTest {
             MaterialTheme {
                 AnimatedLocationDisplay(
                     address = testAddress,
+                    coordinates = 60.169418 to 24.931618,
                     isAnimating = true
                 )
             }
@@ -58,6 +59,7 @@ class AnimatedLocationDisplayTest {
             MaterialTheme {
                 AnimatedLocationDisplay(
                     address = testAddress,
+                    coordinates = 0.0 to 0.0,
                     isAnimating = false
                 )
             }
@@ -74,6 +76,7 @@ class AnimatedLocationDisplayTest {
             MaterialTheme {
                 AnimatedLocationDisplay(
                     address = "Test Location",
+                    coordinates = 60.169818 to 24.932906,
                     isAnimating = false
                 )
             }
@@ -96,6 +99,7 @@ class AnimatedLocationDisplayTest {
             MaterialTheme {
                 AnimatedLocationDisplay(
                     address = longAddress,
+                    coordinates = 60.170005 to 24.935105,
                     isAnimating = true
                 )
             }

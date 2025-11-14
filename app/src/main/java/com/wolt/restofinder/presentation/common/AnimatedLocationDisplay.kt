@@ -8,6 +8,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,17 +53,11 @@ import timber.log.Timber
 
 /**
  * Animated location display with a border line that traces around the edges.
- *
- * Features:
- * - Static blue dot on left edge (starting point marker)
- * - Animated blue LINE that grows from 0% to 100% around the border
- * - 10-second animation cycle synced with location updates
- * - Gray background border showing the full path
- * - Resets animation when locationKey changes (new location update)
  */
 @Composable
 fun AnimatedLocationDisplay(
     address: String,
+    coordinates: Pair<Double, Double>,  // (latitude, longitude)
     modifier: Modifier = Modifier,
     isAnimating: Boolean = true,
     locationKey: Any = Unit,  // Triggers animation reset when changed
@@ -153,14 +148,26 @@ fun AnimatedLocationDisplay(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Address text - centered
-            Text(
-                text = address,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.testTag("LocationAddress")
-            )
+            // Address and coordinates - centered
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = address,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("LocationAddress")
+                )
+
+                Text(
+                    text = String.format("%.6f, %.6f", coordinates.first, coordinates.second),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("LocationCoordinates")
+                )
+            }
         }
 
         // Chevron down icon at bottom center
@@ -383,6 +390,7 @@ private fun AnimatedLocationDisplayPreview() {
     RestoFinderTheme {
         AnimatedLocationDisplay(
             address = "Kanavaranta 7 F, 00160 Helsinki",
+            coordinates = 60.169418 to 24.931618,
             isAnimating = true
         )
     }
@@ -394,6 +402,7 @@ private fun AnimatedLocationDisplayStaticPreview() {
     RestoFinderTheme {
         AnimatedLocationDisplay(
             address = "Discovering restaurants nearby...",
+            coordinates = 0.0 to 0.0,
             isAnimating = false
         )
     }
@@ -405,6 +414,7 @@ private fun AnimatedLocationDisplayLongAddressPreview() {
     RestoFinderTheme {
         AnimatedLocationDisplay(
             address = "Very Long Street Name 123 A, 12345 City With Long Name",
+            coordinates = 60.170005 to 24.935105,
             isAnimating = true
         )
     }
@@ -416,6 +426,7 @@ private fun AnimatedLocationDisplayDarkPreview() {
     RestoFinderTheme(darkTheme = true) {
         AnimatedLocationDisplay(
             address = "Kanavaranta 7 F, 00160 Helsinki",
+            coordinates = 60.169418 to 24.931618,
             isAnimating = true
         )
     }
