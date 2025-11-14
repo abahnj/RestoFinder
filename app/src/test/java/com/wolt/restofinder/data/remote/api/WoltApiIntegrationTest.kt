@@ -2,6 +2,8 @@ package com.wolt.restofinder.data.remote.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.wolt.restofinder.data.mapper.toDomain
+import com.wolt.restofinder.data.remote.exception.ServerException
+import com.wolt.restofinder.data.remote.interceptor.ErrorInterceptor
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -16,7 +18,6 @@ import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import retrofit2.HttpException
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
@@ -35,6 +36,7 @@ class WoltApiIntegrationTest {
         mockWebServer.start()
 
         val client = OkHttpClient.Builder()
+            .addInterceptor(ErrorInterceptor())
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(1, TimeUnit.SECONDS)
             .writeTimeout(1, TimeUnit.SECONDS)
@@ -163,14 +165,15 @@ class WoltApiIntegrationTest {
 
         mockWebServer.enqueue(mockResponse)
 
-        // When & Then: API call throws HttpException
-        val exception = assertThrows(HttpException::class.java) {
+        // When & Then: ErrorInterceptor transforms to ServerException
+        val exception = assertThrows(ServerException::class.java) {
             runTest {
                 api.getRestaurants(latitude = 60.17, longitude = 24.94)
             }
         }
 
-        assertEquals(500, exception.code())
+        assertEquals(500, exception.code)
+        assertTrue(exception.message?.contains("Server error") == true)
     }
 
     @Test

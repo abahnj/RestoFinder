@@ -105,6 +105,67 @@ class VenueRepositoryImplTest {
         assertTrue(result.isFailure)
     }
 
+    @Test
+    fun `observeNearbyVenuesWithFavourites uses fallback section when named section not found`() = runTest {
+        val mockResponse = WoltApiResponseDto(
+            sections = listOf(
+                SectionDto(name = "some-other-section", items = emptyList()),
+                SectionDto(
+                    name = "fallback-section",
+                    items = listOf(
+                        RestaurantItemDto(
+                            image = ImageDto("https://example.com/1.jpg", "hash1"),
+                            venue = VenueDetailsDto("venue1", "Restaurant 1", "Description 1")
+                        )
+                    )
+                )
+            )
+        )
+        coEvery { mockApi.getRestaurants(any(), any()) } returns mockResponse
+        every { mockDataStore.favouritesFlow } returns flowOf(emptySet())
+
+        repository.observeNearbyVenuesWithFavourites(60.17, 24.93).test {
+            val result = awaitItem()
+            assertTrue(result.isSuccess)
+            assertEquals(1, result.getOrNull()?.size)
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observeNearbyVenuesWithFavourites filters out items with null venue`() = runTest {
+        val mockResponse = WoltApiResponseDto(
+            sections = listOf(
+                SectionDto(
+                    name = "restaurants-delivering-venues",
+                    items = listOf(
+                        RestaurantItemDto(
+                            image = ImageDto("https://example.com/1.jpg", "hash1"),
+                            venue = VenueDetailsDto("venue1", "Restaurant 1", "Description 1")
+                        ),
+                        RestaurantItemDto(
+                            image = ImageDto("https://example.com/2.jpg", "hash2"),
+                            venue = null  // This should be filtered out
+                        ),
+                        RestaurantItemDto(
+                            image = ImageDto("https://example.com/3.jpg", "hash3"),
+                            venue = VenueDetailsDto("venue3", "Restaurant 3", "Description 3")
+                        )
+                    )
+                )
+            )
+        )
+        coEvery { mockApi.getRestaurants(any(), any()) } returns mockResponse
+        every { mockDataStore.favouritesFlow } returns flowOf(emptySet())
+
+        repository.observeNearbyVenuesWithFavourites(60.17, 24.93).test {
+            val result = awaitItem()
+            assertTrue(result.isSuccess)
+            assertEquals(2, result.getOrNull()?.size)  // Only 2 venues, null one filtered
+            awaitComplete()
+        }
+    }
+
     private fun createMockResponse() = WoltApiResponseDto(
         sections = listOf(
             SectionDto(name = "restaurants_page_categories", items = emptyList()), // Categories section

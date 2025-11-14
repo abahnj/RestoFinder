@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    jacoco
 }
 
 android {
@@ -24,6 +25,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
+
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -38,8 +44,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
 
     buildFeatures {
@@ -52,6 +60,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
+
     buildToolsVersion = "36.1.0"
 }
 
@@ -69,7 +85,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Dependency Injection - Hilt
     implementation(libs.hilt.android)
@@ -115,4 +131,229 @@ dependencies {
     // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+// JaCoCo Configuration
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+// File exclusion patterns for generated code
+val coverageExclusions = listOf(
+    // Android generated
+    "**/R.class",
+    "**/R$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*",
+    "**/*Test*.*",
+    "android/**/*.*",
+
+    // Hilt generated
+    "**/*_HiltModules*",
+    "**/*_Factory*",
+    "**/*_MembersInjector*",
+    "**/Hilt_*",
+    "**/*_Impl*",
+    "**/*Module_*",
+    "**/*_AssistedFactory*",
+    "**/*_ComponentTreeDeps*",
+
+    // Compose generated
+    "**/*$$*.class",
+    "**/*ComposableSingletons*",
+
+    // Data Transfer Objects (no business logic)
+    "**/dto/**",
+
+    // Application class (just Hilt setup)
+    "**/RestoFinderApplication*",
+
+    // UI Components (tested via instrumented tests, not unit tests)
+    "**/presentation/common/AnimatedLocationDisplayKt*",
+    "**/presentation/common/LoadingStateKt*",
+    "**/presentation/common/ErrorStateKt*",
+    "**/presentation/common/EmptyStateKt*",
+    "**/presentation/common/NetworkImageKt*",
+    "**/presentation/common/ShimmerVenueCardKt*",
+    "**/presentation/common/LocationFormatterKt*",
+    "**/presentation/venues/components/**",
+    "**/presentation/venues/VenueListScreenKt*",
+    "**/presentation/theme/**",
+
+    // Utilities (vendored code from Wolt - BlurHashDecoder)
+    "**/util/**"
+)
+
+// Task to generate JaCoCo coverage report
+val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    sourceDirectories.setFrom(files("src/main/java"))
+    classDirectories.setFrom(
+        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+            exclude(coverageExclusions)
+        }
+    )
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        }
+    )
+}
+
+// Task to verify coverage meets minimum thresholds
+val jacocoCoverageVerification = tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    dependsOn("testDebugUnitTest")
+
+    classDirectories.setFrom(
+        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+            exclude(coverageExclusions)
+        }
+    )
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        }
+    )
+
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.80".toBigDecimal() // 80% overall coverage
+            }
+        }
+
+        rule {
+            element = "CLASS"
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.70".toBigDecimal() // 70% per class minimum
+            }
+
+            // Exclude classes with no business logic
+            excludes = listOf(
+                "*.dto.*",
+                "*.BuildConfig",
+                "*.*_Factory",
+                "*.*_HiltModules*",
+                "*.RestoFinderApplication"
+            )
+        }
+    }
+}
+
+// Task to generate instrumented test coverage (UI components)
+val jacocoInstrumentedTestReport = tasks.register<JacocoReport>("jacocoInstrumentedTestReport") {
+    dependsOn("createDebugAndroidTestCoverageReport")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    sourceDirectories.setFrom(files("src/main/java"))
+    classDirectories.setFrom(
+        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+            // Don't exclude UI components for instrumented tests - they're being tested!
+            exclude(listOf(
+                "**/R.class",
+                "**/R$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*Test*.*",
+                "**/*_HiltModules*",
+                "**/*_Factory*",
+                "**/*_MembersInjector*",
+                "**/Hilt_*",
+                "**/*_Impl*",
+                "**/*Module_*",
+                "**/*$$*.class",
+                "**/*ComposableSingletons*",
+                "**/dto/**",
+                "**/RestoFinderApplication*"
+            ))
+        }
+    )
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include("outputs/code_coverage/debugAndroidTest/connected/**/*.ec")
+        }
+    )
+}
+
+// Combined task for unit tests + coverage
+tasks.register("testWithCoverage") {
+    group = "verification"
+    description = "Run unit tests with code coverage report and verification"
+
+    dependsOn(
+        "testDebugUnitTest",
+        "jacocoTestReport",
+        "jacocoTestCoverageVerification"
+    )
+
+    tasks.findByName("jacocoTestReport")?.mustRunAfter("testDebugUnitTest")
+    tasks.findByName("jacocoTestCoverageVerification")?.mustRunAfter("jacocoTestReport")
+}
+
+// Combined task for instrumented tests + coverage
+tasks.register("instrumentedTestWithCoverage") {
+    group = "verification"
+    description = "Run instrumented tests with code coverage report (UI components)"
+
+    dependsOn(
+        "createDebugAndroidTestCoverageReport",
+        "jacocoInstrumentedTestReport"
+    )
+
+    tasks.findByName("jacocoInstrumentedTestReport")?.mustRunAfter("createDebugAndroidTestCoverageReport")
+}
+
+// Combined task for ALL tests + coverage
+tasks.register("allTestsWithCoverage") {
+    group = "verification"
+    description = "Run all tests (unit + instrumented) with code coverage reports"
+
+    dependsOn(
+        "testWithCoverage",
+        "instrumentedTestWithCoverage"
+    )
+
+    tasks.findByName("instrumentedTestWithCoverage")?.mustRunAfter("testWithCoverage")
+}
+
+// Print coverage report locations after generation
+jacocoTestReport.configure {
+    doLast {
+        val reportDir = layout.buildDirectory.get().asFile
+        println("\n✅ Unit Test Coverage Report (Business Logic):")
+        println("   HTML: file://$reportDir/reports/jacoco/jacocoTestReport/html/index.html")
+        println("   XML: $reportDir/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+        println("   Note: UI components excluded - see instrumented test coverage")
+    }
+}
+
+jacocoInstrumentedTestReport.configure {
+    doLast {
+        val reportDir = layout.buildDirectory.get().asFile
+        println("\n✅ Instrumented Test Coverage Report (UI Components):")
+        println("   HTML: file://$reportDir/reports/jacoco/jacocoInstrumentedTestReport/html/index.html")
+        println("   XML: $reportDir/reports/jacoco/jacocoInstrumentedTestReport/jacocoInstrumentedTestReport.xml")
+        println("   Note: Run './gradlew instrumentedTestWithCoverage' to generate")
+    }
 }
