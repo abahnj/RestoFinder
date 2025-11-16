@@ -92,6 +92,8 @@ class VenueListViewModelTest {
                     mockObserveLocationUpdatesUseCase,
                 )
 
+            testScheduler.advanceUntilIdle()
+
             viewModel.uiState.test {
                 assertEquals(VenueListUiState.Loading, awaitItem())
 
@@ -348,6 +350,8 @@ class VenueListViewModelTest {
                     mockToggleFavouriteUseCase,
                     mockObserveLocationUpdatesUseCase,
                 )
+
+            testScheduler.advanceUntilIdle()
 
             viewModel.uiState.test {
                 skipItems(1) // Skip Loading
