@@ -83,7 +83,7 @@ class VenueListViewModelTest {
     fun `successful fetch emits Success state`() =
         runTest {
             every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf(testLocation)
-            every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
+            every { mockGetNearbyVenuesUseCase(testLocation) } returns flowOf(Result.success(testVenues))
 
             viewModel =
                 VenueListViewModel(
@@ -91,8 +91,6 @@ class VenueListViewModelTest {
                     mockToggleFavouriteUseCase,
                     mockObserveLocationUpdatesUseCase,
                 )
-
-            testScheduler.advanceUntilIdle()
 
             viewModel.uiState.test {
                 assertEquals(VenueListUiState.Loading, awaitItem())
@@ -340,7 +338,7 @@ class VenueListViewModelTest {
             val exception = RuntimeException("Unexpected error")
             every { mockObserveLocationUpdatesUseCase(any()) } returns flowOf(testLocation)
             // Return flow that throws inside map (caught by catch block)
-            every { mockGetNearbyVenuesUseCase(any()) } returns
+            every { mockGetNearbyVenuesUseCase(testLocation) } returns
                 flowOf(Result.success(testVenues))
                     .map { throw exception }
 
@@ -351,10 +349,8 @@ class VenueListViewModelTest {
                     mockObserveLocationUpdatesUseCase,
                 )
 
-            testScheduler.advanceUntilIdle()
-
             viewModel.uiState.test {
-                skipItems(1) // Skip Loading
+                assertEquals(VenueListUiState.Loading, awaitItem())
 
                 val errorState = awaitItem() as VenueListUiState.Error
                 assertTrue(errorState.message.contains("Unexpected error"))
