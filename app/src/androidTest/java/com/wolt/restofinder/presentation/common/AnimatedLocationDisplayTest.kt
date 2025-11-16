@@ -35,11 +35,11 @@ class AnimatedLocationDisplayTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("LocationPin")
+            .onNodeWithTag("LocationAddress")
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("LocationAddress")
+            .onNodeWithTag("LocationCoordinates")
             .assertIsDisplayed()
 
         composeTestRule
@@ -87,7 +87,11 @@ class AnimatedLocationDisplayTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("LocationPin")
+            .onNodeWithTag("LocationAddress")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag("LocationCoordinates")
             .assertIsDisplayed()
     }
 
