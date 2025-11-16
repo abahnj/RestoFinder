@@ -19,8 +19,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +40,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.wolt.restofinder.presentation.theme.GreetingSecondary
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
@@ -50,6 +50,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wolt.restofinder.R
@@ -117,7 +118,7 @@ fun VenueListScreen(
                                 imageVector = Icons.Default.Person,
                                 contentDescription = "Profile",
                                 modifier = Modifier
-                                    .size(48.dp)
+                                    .size(32.dp)
                                     .clip(CircleShape)
                                     .background(MaterialTheme.colorScheme.primaryContainer)
                                     .padding(8.dp),
@@ -131,7 +132,8 @@ fun VenueListScreen(
                                 text = buildAnnotatedString {
                                     withStyle(
                                         style = SpanStyle(
-                                            color = Color.Gray,
+                                            color = GreetingSecondary,
+                                            fontSize = 18.sp,
                                             fontWeight = FontWeight.Normal
                                         )
                                     ) {
@@ -139,6 +141,7 @@ fun VenueListScreen(
                                     }
                                     withStyle(
                                         style = SpanStyle(
+                                            fontSize = 18.sp,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             fontWeight = FontWeight.Bold
                                         )
@@ -154,7 +157,7 @@ fun VenueListScreen(
                         Row {
                             IconButton(onClick = { }) {
                                 Icon(
-                                    imageVector = Icons.Default.Search,
+                                    painter = painterResource(R.drawable.search),
                                     contentDescription = "Search",
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -162,7 +165,7 @@ fun VenueListScreen(
 
                             IconButton(onClick = {  }) {
                                 Icon(
-                                    imageVector = Icons.Default.ShoppingCart,
+                                    painter = painterResource(R.drawable.shopping_cart),
                                     contentDescription = "Cart",
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -209,6 +212,9 @@ fun VenueListScreen(
                 text = "Showing places near you",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                lineHeight = 25.sp,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surface)

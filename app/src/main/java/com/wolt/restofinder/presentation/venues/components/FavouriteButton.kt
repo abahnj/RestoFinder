@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
@@ -27,6 +28,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wolt.restofinder.presentation.theme.FavoriteRed
 
 @Composable
 fun FavouriteButton(
@@ -62,7 +64,7 @@ fun FavouriteButton(
 
     val iconColor by animateColorAsState(
         targetValue = if (isFavourite) {
-            MaterialTheme.colorScheme.error
+            FavoriteRed
         } else {
             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         },

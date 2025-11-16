@@ -48,6 +48,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wolt.restofinder.R
+import com.wolt.restofinder.presentation.theme.PathBackgroundDark
+import com.wolt.restofinder.presentation.theme.PathBackgroundLight
+import com.wolt.restofinder.presentation.theme.Primary
 import com.wolt.restofinder.presentation.theme.RestoFinderTheme
 import timber.log.Timber
 
@@ -63,7 +66,7 @@ fun AnimatedLocationDisplay(
     locationKey: Any = Unit,  // Triggers animation reset when changed
 ) {
     val progress = remember { Animatable(0f) }
-    val primaryColor = MaterialTheme.colorScheme.primary
+    val primaryColor = Primary
     val density = LocalDensity.current
 
     // Dark mode detection for color inversion
@@ -71,9 +74,9 @@ fun AnimatedLocationDisplay(
 
     // Adjust colors for dark mode visibility
     val pathBackgroundColor = if (isDarkMode) {
-        Color.White.copy(alpha = 0.3f)
+        PathBackgroundDark
     } else {
-        Color.Gray.copy(alpha = 0.5f)
+        PathBackgroundLight
     }
 
     // 10-second animation synced with ViewModel location emissions
@@ -174,8 +177,8 @@ fun AnimatedLocationDisplay(
             val height = size.height
 
             val cornerRadius = with(density) { 20.dp.toPx() }
-            val strokeWidth = with(density) { 4.dp.toPx() }
-            val inset = with(density) { 8.dp.toPx() }
+            val strokeWidth = with(density) { 2.dp.toPx() }
+            val inset = with(density) { 4.dp.toPx() }
             val cutoutWidth = with(density) { 100.dp.toPx() }
             val cutoutDepth = with(density) { 20.dp.toPx() }
 
@@ -233,7 +236,7 @@ fun AnimatedLocationDisplay(
             // 3. Draw the static dot at start position (left center)
             drawCircle(
                 color = primaryColor,
-                radius = strokeWidth * 1.5f,
+                radius = strokeWidth * 1.25f,
                 center = Offset(inset, height / 2f)
             )
         }
