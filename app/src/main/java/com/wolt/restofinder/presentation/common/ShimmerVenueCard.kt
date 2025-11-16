@@ -32,7 +32,7 @@ import com.wolt.restofinder.presentation.theme.RestoFinderTheme
 @Composable
 fun ShimmerVenueCard(
     modifier: Modifier = Modifier,
-    imageHeight: Dp = 200.dp,
+    imageHeight: Dp = 160.dp,
     cornerRadius: Dp = 20.dp
 ) {
     val shimmerDescription = stringResource(R.string.shimmer_card_description)
