@@ -38,31 +38,33 @@ fun VenueList(
     venues: List<Venue>,
     listState: LazyListState,
     onFavouriteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val contentDescription = stringResource(R.string.venue_list_content_description)
 
     LazyColumn(
         state = listState,
-        modifier = modifier
-            .fillMaxSize()
-            .testTag("VenueList")
-            .semantics {
-                this.contentDescription = buildString {
-                    append(contentDescription)
-                    append(". ")
-                    append(venues.size)
-                    append(" ")
-                    append(if (venues.size == 1) "restaurant" else "restaurants")
-                }
-            },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .testTag("VenueList")
+                .semantics {
+                    this.contentDescription =
+                        buildString {
+                            append(contentDescription)
+                            append(". ")
+                            append(venues.size)
+                            append(" ")
+                            append(if (venues.size == 1) "restaurant" else "restaurants")
+                        }
+                },
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         itemsIndexed(
             items = venues,
             key = { _, venue -> venue.id },
-            contentType = { _, _ -> "VenueCard" }
+            contentType = { _, _ -> "VenueCard" },
         ) { index, venue ->
             // Animation state for scale and alpha (staggered entrance)
             val animatable = remember { Animatable(0f) }
@@ -72,32 +74,35 @@ fun VenueList(
                 delay(staggerDelay.toLong())
                 animatable.animateTo(
                     targetValue = 1f,
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        easing = FastOutSlowInEasing
-                    )
+                    animationSpec =
+                        tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing,
+                        ),
                 )
             }
 
             VenueCard(
                 venue = venue,
                 onFavouriteClick = onFavouriteClick,
-                modifier = Modifier
-                    .graphicsLayer {
-                        // Scale: 0.92f → 1.0f (popping in effect)
-                        val scale = 0.92f + (animatable.value * 0.08f)
-                        scaleX = scale
-                        scaleY = scale
-                        alpha = animatable.value
-                    }
-                    .animateItem(
-                        fadeInSpec = null,
-                        fadeOutSpec = tween(durationMillis = 250),
-                        placementSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessMedium
-                        )
-                    )
+                modifier =
+                    Modifier
+                        .graphicsLayer {
+                            // Scale: 0.92f → 1.0f (popping in effect)
+                            val scale = 0.92f + (animatable.value * 0.08f)
+                            scaleX = scale
+                            scaleY = scale
+                            alpha = animatable.value
+                        }
+                        .animateItem(
+                            fadeInSpec = null,
+                            fadeOutSpec = tween(durationMillis = 250),
+                            placementSpec =
+                                spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMedium,
+                                ),
+                        ),
             )
         }
     }
@@ -110,13 +115,14 @@ fun VenueList(
 private fun VenueListPreview() {
     RestoFinderTheme {
         VenueList(
-            venues = listOf(
-                Venue("1", "McDonald's Helsinki", "I'm lovin' it.", "", "", false),
-                Venue("2", "Noodle Story Freda", "Fresh homemade noodles", "", "", true),
-                Venue("3", "Eat Poke Kamppi", null, "", "", false)
-            ),
+            venues =
+                listOf(
+                    Venue("1", "McDonald's Helsinki", "I'm lovin' it.", "", "", false),
+                    Venue("2", "Noodle Story Freda", "Fresh homemade noodles", "", "", true),
+                    Venue("3", "Eat Poke Kamppi", null, "", "", false),
+                ),
             listState = rememberLazyListState(),
-            onFavouriteClick = {}
+            onFavouriteClick = {},
         )
     }
 }

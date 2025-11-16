@@ -18,7 +18,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FavouriteButtonTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -28,7 +27,7 @@ class FavouriteButtonTest {
             MaterialTheme {
                 FavouriteButton(
                     isFavourite = true,
-                    onClick = {}
+                    onClick = {},
                 )
             }
         }
@@ -45,7 +44,7 @@ class FavouriteButtonTest {
             MaterialTheme {
                 FavouriteButton(
                     isFavourite = false,
-                    onClick = {}
+                    onClick = {},
                 )
             }
         }
@@ -64,7 +63,7 @@ class FavouriteButtonTest {
             MaterialTheme {
                 FavouriteButton(
                     isFavourite = false,
-                    onClick = { clickCount++ }
+                    onClick = { clickCount++ },
                 )
             }
         }
@@ -84,7 +83,7 @@ class FavouriteButtonTest {
 
                 FavouriteButton(
                     isFavourite = isFavourite,
-                    onClick = { isFavourite = !isFavourite }
+                    onClick = { isFavourite = !isFavourite },
                 )
             }
         }
@@ -113,7 +112,7 @@ class FavouriteButtonTest {
                 FavouriteButton(
                     isFavourite = false,
                     onClick = { clickCount++ },
-                    enabled = false
+                    enabled = false,
                 )
             }
         }

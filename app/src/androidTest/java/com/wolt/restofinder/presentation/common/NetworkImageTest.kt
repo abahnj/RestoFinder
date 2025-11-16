@@ -1,14 +1,9 @@
 package com.wolt.restofinder.presentation.common
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +11,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class NetworkImageTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -26,7 +20,7 @@ class NetworkImageTest {
             MaterialTheme {
                 NetworkImage(
                     imageUrl = "https://example.com/image.jpg",
-                    contentDescription = "Test image"
+                    contentDescription = "Test image",
                 )
             }
         }
@@ -43,7 +37,7 @@ class NetworkImageTest {
                 NetworkImage(
                     imageUrl = "https://example.com/image.jpg",
                     contentDescription = "Test image",
-                    blurHash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+                    blurHash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj",
                 )
             }
         }
@@ -61,7 +55,7 @@ class NetworkImageTest {
             MaterialTheme {
                 NetworkImage(
                     imageUrl = "invalid-url",
-                    contentDescription = "Test image"
+                    contentDescription = "Test image",
                 )
             }
         }
@@ -80,7 +74,7 @@ class NetworkImageTest {
                 NetworkImage(
                     imageUrl = "https://example.com/image.jpg",
                     contentDescription = "Test image",
-                    showLoadingIndicator = false
+                    showLoadingIndicator = false,
                 )
             }
         }
@@ -89,5 +83,4 @@ class NetworkImageTest {
             .onNodeWithTag("LoadingIndicator")
             .assertDoesNotExist()
     }
-
 }

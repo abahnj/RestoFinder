@@ -41,7 +41,7 @@ fun NetworkImage(
     modifier: Modifier = Modifier,
     blurHash: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
-    showLoadingIndicator: Boolean = true
+    showLoadingIndicator: Boolean = true,
 ) {
     var blurHashBitmap by remember(blurHash) { mutableStateOf<Bitmap?>(null) }
     val scope = rememberCoroutineScope()
@@ -49,9 +49,10 @@ fun NetworkImage(
     LaunchedEffect(blurHash) {
         blurHash?.let { hash ->
             scope.launch {
-                blurHashBitmap = withContext(Dispatchers.Default) {
-                    BlurHashDecoder.decode(blurHash = hash, width = 32, height = 32)
-                }
+                blurHashBitmap =
+                    withContext(Dispatchers.Default) {
+                        BlurHashDecoder.decode(blurHash = hash, width = 32, height = 32)
+                    }
             }
         }
     }
@@ -60,21 +61,22 @@ fun NetworkImage(
         model = imageUrl,
         contentDescription = contentDescription,
         contentScale = contentScale,
-        modifier = modifier
-            .testTag("NetworkImage")
-            .semantics {
-                this.contentDescription = contentDescription ?: "Image"
-            },
+        modifier =
+            modifier
+                .testTag("NetworkImage")
+                .semantics {
+                    this.contentDescription = contentDescription ?: "Image"
+                },
         loading = {
             LoadingPlaceholder(
                 blurHashBitmap = blurHashBitmap,
                 showLoadingIndicator = showLoadingIndicator,
-                hasBlurHash = blurHash != null
+                hasBlurHash = blurHash != null,
             )
         },
         error = {
             ErrorPlaceholder()
-        }
+        },
     )
 }
 
@@ -82,33 +84,36 @@ fun NetworkImage(
 private fun LoadingPlaceholder(
     blurHashBitmap: Bitmap?,
     showLoadingIndicator: Boolean,
-    hasBlurHash: Boolean
+    hasBlurHash: Boolean,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag("LoadingPlaceholder"),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .testTag("LoadingPlaceholder"),
+        contentAlignment = Alignment.Center,
     ) {
         Crossfade(
             targetState = blurHashBitmap,
             animationSpec = tween(durationMillis = 300),
-            label = "BlurHashCrossfade"
+            label = "BlurHashCrossfade",
         ) { bitmap ->
             if (bitmap != null) {
                 Image(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag("BlurHashPlaceholder")
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .testTag("BlurHashPlaceholder"),
                 )
             } else {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
                 )
             }
         }
@@ -116,10 +121,11 @@ private fun LoadingPlaceholder(
         // Only show loading indicator if no blurhash is provided
         if (showLoadingIndicator && !hasBlurHash) {
             CircularProgressIndicator(
-                modifier = Modifier
-                    .size(40.dp)
-                    .testTag("LoadingIndicator"),
-                color = MaterialTheme.colorScheme.primary
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .testTag("LoadingIndicator"),
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -128,17 +134,18 @@ private fun LoadingPlaceholder(
 @Composable
 private fun ErrorPlaceholder() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.errorContainer)
-            .testTag("ErrorPlaceholder"),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.errorContainer)
+                .testTag("ErrorPlaceholder"),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = Icons.Default.BrokenImage,
             contentDescription = "Failed to load image",
             tint = MaterialTheme.colorScheme.onErrorContainer,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
         )
     }
 }

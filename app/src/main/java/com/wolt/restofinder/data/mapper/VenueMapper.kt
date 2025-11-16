@@ -11,6 +11,6 @@ fun RestaurantItemDto.toDomain(isFavourite: Boolean = false): Venue {
         description = venue.shortDescription,
         blurHash = image.blurhash,
         imageUrl = image.url,
-        isFavourite = isFavourite
+        isFavourite = isFavourite,
     )
 }

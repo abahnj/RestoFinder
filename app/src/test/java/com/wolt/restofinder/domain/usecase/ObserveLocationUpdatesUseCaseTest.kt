@@ -12,33 +12,34 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ObserveLocationUpdatesUseCaseTest {
-
     private val mockRepository = mockk<LocationRepository>()
     private val useCase = ObserveLocationUpdatesUseCase(mockRepository)
 
     private val testLocation = Location(60.17, 24.93)
 
     @Test
-    fun `invoke delegates to repository with default delay`() = runTest {
-        every { mockRepository.getLocationUpdates(10_000) } returns flowOf(testLocation)
+    fun `invoke delegates to repository with default delay`() =
+        runTest {
+            every { mockRepository.getLocationUpdates(10_000) } returns flowOf(testLocation)
 
-        useCase().test {
-            assertEquals(testLocation, awaitItem())
-            awaitComplete()
+            useCase().test {
+                assertEquals(testLocation, awaitItem())
+                awaitComplete()
+            }
+
+            verify { mockRepository.getLocationUpdates(10_000) }
         }
-
-        verify { mockRepository.getLocationUpdates(10_000) }
-    }
 
     @Test
-    fun `invoke delegates to repository with custom delay`() = runTest {
-        every { mockRepository.getLocationUpdates(5_000) } returns flowOf(testLocation)
+    fun `invoke delegates to repository with custom delay`() =
+        runTest {
+            every { mockRepository.getLocationUpdates(5_000) } returns flowOf(testLocation)
 
-        useCase(5_000).test {
-            assertEquals(testLocation, awaitItem())
-            awaitComplete()
+            useCase(5_000).test {
+                assertEquals(testLocation, awaitItem())
+                awaitComplete()
+            }
+
+            verify { mockRepository.getLocationUpdates(5_000) }
         }
-
-        verify { mockRepository.getLocationUpdates(5_000) }
-    }
 }

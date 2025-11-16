@@ -87,6 +87,27 @@ No, portrait mode is sufficient.
 
 The provided mockup is just a suggestion. Feel free to design the UI your own way as long as it contains the same information.
 
+## 🧪 Testing & Coverage
+
+This project has comprehensive test coverage across all layers.
+
+### Quick Start
+
+```bash
+# Show all available commands
+make help
+
+# Run unit tests (~5 seconds)
+make test-unit
+
+# Generate coverage report
+make coverage-unit
+
+# View coverage in browser
+make view-coverage
+```
+---
+
 ## Notes from the applicant
 
 > Please write here if you want to explain the choices you made on the way :).

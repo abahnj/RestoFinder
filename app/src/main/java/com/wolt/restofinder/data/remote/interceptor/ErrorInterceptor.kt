@@ -10,7 +10,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class ErrorInterceptor : Interceptor {
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 

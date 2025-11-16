@@ -33,80 +33,87 @@ import com.wolt.restofinder.presentation.theme.RestoFinderTheme
 fun ShimmerVenueCard(
     modifier: Modifier = Modifier,
     imageHeight: Dp = 160.dp,
-    cornerRadius: Dp = 20.dp
+    cornerRadius: Dp = 20.dp,
 ) {
     val shimmerDescription = stringResource(R.string.shimmer_card_description)
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .shimmer()
-            .semantics {
-                contentDescription = shimmerDescription
-            }
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .shimmer()
+                .semantics {
+                    contentDescription = shimmerDescription
+                },
     ) {
         // Image placeholder
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(imageHeight)
-                .clip(RoundedCornerShape(cornerRadius))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .testTag("ShimmerImage")
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(imageHeight)
+                    .clip(RoundedCornerShape(cornerRadius))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .testTag("ShimmerImage"),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         // Content placeholders
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 // Name placeholder
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .height(20.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .testTag("ShimmerName")
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(20.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .testTag("ShimmerName"),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Description placeholder - line 1
+                // Description placeholder
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(14.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .testTag("ShimmerDescription1")
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(14.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .testTag("ShimmerDescription1"),
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Description placeholder - line 2
+                // Description placeholder
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(14.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .testTag("ShimmerDescription2")
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(14.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .testTag("ShimmerDescription2"),
                 )
             }
 
             // Favourite button placeholder
             Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .testTag("ShimmerFavouriteButton")
+                modifier =
+                    Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .testTag("ShimmerFavouriteButton"),
             )
         }
     }
@@ -132,7 +139,7 @@ private fun ShimmerVenueCardSizesPreview() {
         Surface {
             Column(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp),
             ) {
                 ShimmerVenueCard(imageHeight = 150.dp)
                 ShimmerVenueCard(imageHeight = 250.dp)

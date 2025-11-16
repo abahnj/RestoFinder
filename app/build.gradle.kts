@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.ktlint)
     jacoco
 }
 
@@ -46,7 +47,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             // Use debug signing for assignment purposes
             signingConfig = signingConfigs.getByName("debug")
@@ -162,155 +163,156 @@ tasks.withType<Test> {
 }
 
 // File exclusion patterns for generated code
-val coverageExclusions = listOf(
-    // Android generated
-    "**/R.class",
-    "**/R$*.class",
-    "**/BuildConfig.*",
-    "**/Manifest*.*",
-    "**/*Test*.*",
-    "android/**/*.*",
-
-    // Hilt generated
-    "**/*_HiltModules*",
-    "**/*_Factory*",
-    "**/*_MembersInjector*",
-    "**/Hilt_*",
-    "**/*_Impl*",
-    "**/*Module_*",
-    "**/*_AssistedFactory*",
-    "**/*_ComponentTreeDeps*",
-
-    // Compose generated
-    "**/*$$*.class",
-    "**/*ComposableSingletons*",
-
-    // Data Transfer Objects (no business logic)
-    "**/dto/**",
-
-    // Application class (just Hilt setup)
-    "**/RestoFinderApplication*",
-
-    // UI Components (tested via instrumented tests, not unit tests)
-    "**/presentation/common/AnimatedLocationDisplayKt*",
-    "**/presentation/common/LoadingStateKt*",
-    "**/presentation/common/ErrorStateKt*",
-    "**/presentation/common/EmptyStateKt*",
-    "**/presentation/common/NetworkImageKt*",
-    "**/presentation/common/ShimmerVenueCardKt*",
-    "**/presentation/common/LocationFormatterKt*",
-    "**/presentation/venues/components/**",
-    "**/presentation/venues/VenueListScreenKt*",
-    "**/presentation/theme/**",
-
-    // Utilities (vendored code from Wolt - BlurHashDecoder)
-    "**/util/**"
-)
+val coverageExclusions =
+    listOf(
+        // Android generated
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        // Hilt generated
+        "**/*_HiltModules*",
+        "**/*_Factory*",
+        "**/*_MembersInjector*",
+        "**/Hilt_*",
+        "**/*_Impl*",
+        "**/*Module_*",
+        "**/*_AssistedFactory*",
+        "**/*_ComponentTreeDeps*",
+        // Compose generated
+        "**/*$$*.class",
+        "**/*ComposableSingletons*",
+        // Data Transfer Objects (no business logic)
+        "**/dto/**",
+        // Application class (just Hilt setup)
+        "**/RestoFinderApplication*",
+        // UI Components (tested via instrumented tests, not unit tests)
+        "**/presentation/common/AnimatedLocationDisplayKt*",
+        "**/presentation/common/LoadingStateKt*",
+        "**/presentation/common/ErrorStateKt*",
+        "**/presentation/common/EmptyStateKt*",
+        "**/presentation/common/NetworkImageKt*",
+        "**/presentation/common/ShimmerVenueCardKt*",
+        "**/presentation/common/LocationFormatterKt*",
+        "**/presentation/venues/components/**",
+        "**/presentation/venues/VenueListScreenKt*",
+        "**/presentation/theme/**",
+        // Utilities (vendored code from Wolt - BlurHashDecoder)
+        "**/util/**",
+    )
 
 // Task to generate JaCoCo coverage report
-val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
-    dependsOn("testDebugUnitTest")
+val jacocoTestReport =
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn("testDebugUnitTest")
 
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        csv.required.set(false)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+            csv.required.set(false)
+        }
+
+        sourceDirectories.setFrom(files("src/main/java"))
+        classDirectories.setFrom(
+            fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+                exclude(coverageExclusions)
+            },
+        )
+        executionData.setFrom(
+            fileTree(layout.buildDirectory) {
+                include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+            },
+        )
     }
-
-    sourceDirectories.setFrom(files("src/main/java"))
-    classDirectories.setFrom(
-        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
-            exclude(coverageExclusions)
-        }
-    )
-    executionData.setFrom(
-        fileTree(layout.buildDirectory) {
-            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
-        }
-    )
-}
 
 // Task to verify coverage meets minimum thresholds
-val jacocoCoverageVerification = tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
-    dependsOn("testDebugUnitTest")
+val jacocoCoverageVerification =
+    tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+        dependsOn("testDebugUnitTest")
 
-    classDirectories.setFrom(
-        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
-            exclude(coverageExclusions)
-        }
-    )
-    executionData.setFrom(
-        fileTree(layout.buildDirectory) {
-            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
-        }
-    )
+        classDirectories.setFrom(
+            fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+                exclude(coverageExclusions)
+            },
+        )
+        executionData.setFrom(
+            fileTree(layout.buildDirectory) {
+                include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+            },
+        )
 
-    violationRules {
-        rule {
-            limit {
-                minimum = "0.80".toBigDecimal() // 80% overall coverage
-            }
-        }
-
-        rule {
-            element = "CLASS"
-            limit {
-                counter = "LINE"
-                value = "COVEREDRATIO"
-                minimum = "0.70".toBigDecimal() // 70% per class minimum
+        violationRules {
+            rule {
+                limit {
+                    minimum = "0.80".toBigDecimal() // 80% overall coverage
+                }
             }
 
-            // Exclude classes with no business logic
-            excludes = listOf(
-                "*.dto.*",
-                "*.BuildConfig",
-                "*.*_Factory",
-                "*.*_HiltModules*",
-                "*.RestoFinderApplication"
-            )
+            rule {
+                element = "CLASS"
+                limit {
+                    counter = "LINE"
+                    value = "COVEREDRATIO"
+                    minimum = "0.70".toBigDecimal() // 70% per class minimum
+                }
+
+                // Exclude classes with no business logic
+                excludes =
+                    listOf(
+                        "*.dto.*",
+                        "*.BuildConfig",
+                        "*.*_Factory",
+                        "*.*_HiltModules*",
+                        "*.RestoFinderApplication",
+                    )
+            }
         }
     }
-}
 
 // Task to generate instrumented test coverage (UI components)
-val jacocoInstrumentedTestReport = tasks.register<JacocoReport>("jacocoInstrumentedTestReport") {
-    dependsOn("createDebugAndroidTestCoverageReport")
+val jacocoInstrumentedTestReport =
+    tasks.register<JacocoReport>("jacocoInstrumentedTestReport") {
+        dependsOn("createDebugAndroidTestCoverageReport")
 
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        csv.required.set(false)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+            csv.required.set(false)
+        }
+
+        sourceDirectories.setFrom(files("src/main/java"))
+        classDirectories.setFrom(
+            fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
+                // Don't exclude UI components for instrumented tests - they're being tested!
+                exclude(
+                    listOf(
+                        "**/R.class",
+                        "**/R$*.class",
+                        "**/BuildConfig.*",
+                        "**/Manifest*.*",
+                        "**/*Test*.*",
+                        "**/*_HiltModules*",
+                        "**/*_Factory*",
+                        "**/*_MembersInjector*",
+                        "**/Hilt_*",
+                        "**/*_Impl*",
+                        "**/*Module_*",
+                        "**/*$$*.class",
+                        "**/*ComposableSingletons*",
+                        "**/dto/**",
+                        "**/RestoFinderApplication*",
+                    ),
+                )
+            },
+        )
+        executionData.setFrom(
+            fileTree(layout.buildDirectory) {
+                include("outputs/code_coverage/debugAndroidTest/connected/**/*.ec")
+            },
+        )
     }
-
-    sourceDirectories.setFrom(files("src/main/java"))
-    classDirectories.setFrom(
-        fileTree(layout.buildDirectory.map { it.dir("tmp/kotlin-classes/debug") }) {
-            // Don't exclude UI components for instrumented tests - they're being tested!
-            exclude(listOf(
-                "**/R.class",
-                "**/R$*.class",
-                "**/BuildConfig.*",
-                "**/Manifest*.*",
-                "**/*Test*.*",
-                "**/*_HiltModules*",
-                "**/*_Factory*",
-                "**/*_MembersInjector*",
-                "**/Hilt_*",
-                "**/*_Impl*",
-                "**/*Module_*",
-                "**/*$$*.class",
-                "**/*ComposableSingletons*",
-                "**/dto/**",
-                "**/RestoFinderApplication*"
-            ))
-        }
-    )
-    executionData.setFrom(
-        fileTree(layout.buildDirectory) {
-            include("outputs/code_coverage/debugAndroidTest/connected/**/*.ec")
-        }
-    )
-}
 
 // Combined task for unit tests + coverage
 tasks.register("testWithCoverage") {
@@ -320,7 +322,7 @@ tasks.register("testWithCoverage") {
     dependsOn(
         "testDebugUnitTest",
         "jacocoTestReport",
-        "jacocoTestCoverageVerification"
+        "jacocoTestCoverageVerification",
     )
 
     tasks.findByName("jacocoTestReport")?.mustRunAfter("testDebugUnitTest")
@@ -334,7 +336,7 @@ tasks.register("instrumentedTestWithCoverage") {
 
     dependsOn(
         "createDebugAndroidTestCoverageReport",
-        "jacocoInstrumentedTestReport"
+        "jacocoInstrumentedTestReport",
     )
 
     tasks.findByName("jacocoInstrumentedTestReport")?.mustRunAfter("createDebugAndroidTestCoverageReport")
@@ -347,7 +349,7 @@ tasks.register("allTestsWithCoverage") {
 
     dependsOn(
         "testWithCoverage",
-        "instrumentedTestWithCoverage"
+        "instrumentedTestWithCoverage",
     )
 
     tasks.findByName("instrumentedTestWithCoverage")?.mustRunAfter("testWithCoverage")

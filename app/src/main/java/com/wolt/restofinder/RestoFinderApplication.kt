@@ -6,7 +6,6 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class RestoFinderApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
         initializeTimber()
@@ -17,7 +16,6 @@ class RestoFinderApplication : Application() {
      */
     private fun initializeTimber() {
         if (BuildConfig.DEBUG) {
-            // Debug tree: logs to logcat with automatic tag generation
             Timber.plant(Timber.DebugTree())
             Timber.d("Timber initialized for DEBUG build")
         }

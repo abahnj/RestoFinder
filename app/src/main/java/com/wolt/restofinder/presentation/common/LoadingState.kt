@@ -23,23 +23,24 @@ fun LoadingState(
     modifier: Modifier = Modifier,
     itemCount: Int = 15,
     contentPadding: PaddingValues = PaddingValues(16.dp),
-    itemSpacing: Dp = 16.dp
+    itemSpacing: Dp = 16.dp,
 ) {
     val loadingDescription = stringResource(R.string.loading_state_description)
 
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .testTag("LoadingState")
-            .semantics {
-                contentDescription = loadingDescription
-            },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .testTag("LoadingState")
+                .semantics {
+                    contentDescription = loadingDescription
+                },
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(itemSpacing)
+        verticalArrangement = Arrangement.spacedBy(itemSpacing),
     ) {
         items(itemCount) { index ->
             ShimmerVenueCard(
-                modifier = Modifier.testTag("ShimmerCard_$index")
+                modifier = Modifier.testTag("ShimmerCard_$index"),
             )
         }
     }

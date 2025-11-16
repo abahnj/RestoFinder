@@ -28,30 +28,33 @@ import com.wolt.restofinder.presentation.theme.RestoFinderTheme
 fun VenueCard(
     venue: Venue,
     onFavouriteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .testTag("VenueCard")
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .testTag("VenueCard"),
     ) {
         NetworkImage(
             imageUrl = venue.imageUrl,
             contentDescription = venue.name,
             blurHash = venue.blurHash,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .clip(RoundedCornerShape(20.dp))
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .clip(RoundedCornerShape(20.dp)),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -60,7 +63,7 @@ fun VenueCard(
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.testTag("VenueName")
+                    modifier = Modifier.testTag("VenueName"),
                 )
 
                 venue.description?.takeIf { it.isNotBlank() }?.let { description ->
@@ -72,17 +75,18 @@ fun VenueCard(
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.testTag("VenueDescription")
+                        modifier = Modifier.testTag("VenueDescription"),
                     )
                 }
             }
 
-            val onClick = remember(venue.id, onFavouriteClick) {
-                { onFavouriteClick(venue.id) }
-            }
+            val onClick =
+                remember(venue.id, onFavouriteClick) {
+                    { onFavouriteClick(venue.id) }
+                }
             FavouriteButton(
                 isFavourite = venue.isFavourite,
-                onClick = onClick
+                onClick = onClick,
             )
         }
     }
@@ -93,20 +97,22 @@ fun VenueCard(
 private fun VenueCardPreview() {
     RestoFinderTheme {
         Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp),
         ) {
             VenueCard(
-                venue = Venue(
-                    id = "1",
-                    name = "McDonald's Helsinki Kamppi",
-                    description = "I'm lovin' it.",
-                    blurHash = "",
-                    imageUrl = "",
-                    isFavourite = false
-                ),
-                onFavouriteClick = {}
+                venue =
+                    Venue(
+                        id = "1",
+                        name = "McDonald's Helsinki Kamppi",
+                        description = "I'm lovin' it.",
+                        blurHash = "",
+                        imageUrl = "",
+                        isFavourite = false,
+                    ),
+                onFavouriteClick = {},
             )
         }
     }
@@ -117,20 +123,22 @@ private fun VenueCardPreview() {
 private fun VenueCardFavouritedPreview() {
     RestoFinderTheme {
         Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp),
         ) {
             VenueCard(
-                venue = Venue(
-                    id = "1",
-                    name = "Noodle Story Freda",
-                    description = "Fresh homemade noodles",
-                    blurHash = "",
-                    imageUrl = "",
-                    isFavourite = true
-                ),
-                onFavouriteClick = {}
+                venue =
+                    Venue(
+                        id = "1",
+                        name = "Noodle Story Freda",
+                        description = "Fresh homemade noodles",
+                        blurHash = "",
+                        imageUrl = "",
+                        isFavourite = true,
+                    ),
+                onFavouriteClick = {},
             )
         }
     }
@@ -141,20 +149,24 @@ private fun VenueCardFavouritedPreview() {
 private fun VenueCardLongTextPreview() {
     RestoFinderTheme {
         Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp),
         ) {
             VenueCard(
-                venue = Venue(
-                    id = "1",
-                    name = "Restaurant with Very Long Name That Should Be Truncated",
-                    description = "This is a very long description that should wrap to two lines and then be truncated with ellipsis to show proper text handling",
-                    blurHash = "",
-                    imageUrl = "",
-                    isFavourite = false
-                ),
-                onFavouriteClick = {}
+                venue =
+                    Venue(
+                        id = "1",
+                        name = "Restaurant with Very Long Name That Should Be Truncated",
+                        description =
+                            "This is a very long description that should wrap to two lines " +
+                                "and then be truncated with ellipsis to show proper text handling",
+                        blurHash = "",
+                        imageUrl = "",
+                        isFavourite = false,
+                    ),
+                onFavouriteClick = {},
             )
         }
     }

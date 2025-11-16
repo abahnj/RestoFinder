@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,23 +38,25 @@ fun ErrorState(
     title: String? = null,
     icon: ImageVector = Icons.Default.ErrorOutline,
     retryButtonText: String = stringResource(R.string.error_state_retry),
-    showRetryButton: Boolean = true
+    showRetryButton: Boolean = true,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .testTag("ErrorState"),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .testTag("ErrorState"),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = stringResource(R.string.error_state_icon_description),
-            modifier = Modifier
-                .size(64.dp)
-                .testTag("ErrorStateIcon"),
-            tint = MaterialTheme.colorScheme.error
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .testTag("ErrorStateIcon"),
+            tint = MaterialTheme.colorScheme.error,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -66,7 +67,7 @@ fun ErrorState(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.testTag("ErrorTitle")
+                modifier = Modifier.testTag("ErrorTitle"),
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -76,9 +77,10 @@ fun ErrorState(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .testTag("ErrorMessage")
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .testTag("ErrorMessage")
+                    .padding(horizontal = 24.dp),
         )
 
         if (showRetryButton) {
@@ -86,12 +88,12 @@ fun ErrorState(
 
             Button(
                 onClick = onRetry,
-                modifier = Modifier.testTag("RetryButton")
+                modifier = Modifier.testTag("RetryButton"),
             ) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(18.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(retryButtonText)
@@ -108,7 +110,7 @@ private fun ErrorStatePreview() {
         Surface {
             ErrorState(
                 message = "Failed to load venues. Please check your connection.",
-                onRetry = {}
+                onRetry = {},
             )
         }
     }
@@ -122,7 +124,7 @@ private fun ErrorStateWithTitlePreview() {
             ErrorState(
                 title = "Something Went Wrong",
                 message = "We couldn't load the venues. Please try again.",
-                onRetry = {}
+                onRetry = {},
             )
         }
     }
@@ -136,7 +138,7 @@ private fun ErrorStateNoRetryPreview() {
             ErrorState(
                 message = "This feature is not available in your region.",
                 onRetry = {},
-                showRetryButton = false
+                showRetryButton = false,
             )
         }
     }
@@ -148,10 +150,11 @@ private fun ErrorStateLongMessagePreview() {
     RestoFinderTheme {
         Surface {
             ErrorState(
-                message = "We're experiencing technical difficulties with our servers. " +
+                message =
+                    "We're experiencing technical difficulties with our servers. " +
                         "Our team has been notified and is working to resolve the issue. " +
                         "Please try again in a few moments.",
-                onRetry = {}
+                onRetry = {},
             )
         }
     }

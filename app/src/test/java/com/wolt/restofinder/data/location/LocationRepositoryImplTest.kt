@@ -8,39 +8,41 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class LocationRepositoryImplTest {
-
     private val repository = LocationRepositoryImpl()
 
     @Test
-    fun `getLocationUpdates emits first location immediately`() = runTest {
-        repository.getLocationUpdates(delayMillis = 10).test {
-            val firstLocation = awaitItem()
-            assertEquals(Location(60.169418, 24.931618), firstLocation)
-            cancel()
+    fun `getLocationUpdates emits first location immediately`() =
+        runTest {
+            repository.getLocationUpdates(delayMillis = 10).test {
+                val firstLocation = awaitItem()
+                assertEquals(Location(60.169418, 24.931618), firstLocation)
+                cancel()
+            }
         }
-    }
 
     @Test
-    fun `getLocationUpdates cycles through all 9 coordinates`() = runTest {
-        repository.getLocationUpdates(delayMillis = 10).test {
-            val actual = List(9) { awaitItem() }
-            assertEquals(COORDINATES, actual)
+    fun `getLocationUpdates cycles through all 9 coordinates`() =
+        runTest {
+            repository.getLocationUpdates(delayMillis = 10).test {
+                val actual = List(9) { awaitItem() }
+                assertEquals(COORDINATES, actual)
 
-            cancel()
+                cancel()
+            }
         }
-    }
 
     @Test
-    fun `getLocationUpdates loops back to first after 9th`() = runTest {
-        repository.getLocationUpdates(delayMillis = 10).test {
-            repeat(9) { awaitItem() }
+    fun `getLocationUpdates loops back to first after 9th`() =
+        runTest {
+            repository.getLocationUpdates(delayMillis = 10).test {
+                repeat(9) { awaitItem() }
 
-            val tenthLocation = awaitItem()
-            assertEquals(COORDINATES[0], tenthLocation)
+                val tenthLocation = awaitItem()
+                assertEquals(COORDINATES[0], tenthLocation)
 
-            cancel()
+                cancel()
+            }
         }
-    }
 
     @Test
     fun `coordinates match assignment specification`() {
@@ -48,4 +50,3 @@ class LocationRepositoryImplTest {
         assertEquals(9, COORDINATES.size)
     }
 }
-

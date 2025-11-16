@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class AnimatedLocationDisplayTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -25,7 +24,7 @@ class AnimatedLocationDisplayTest {
                 AnimatedLocationDisplay(
                     address = testAddress,
                     coordinates = 60.169418 to 24.931618,
-                    isAnimating = true
+                    isAnimating = true,
                 )
             }
         }
@@ -60,7 +59,7 @@ class AnimatedLocationDisplayTest {
                 AnimatedLocationDisplay(
                     address = testAddress,
                     coordinates = 0.0 to 0.0,
-                    isAnimating = false
+                    isAnimating = false,
                 )
             }
         }
@@ -77,7 +76,7 @@ class AnimatedLocationDisplayTest {
                 AnimatedLocationDisplay(
                     address = "Test Location",
                     coordinates = 60.169818 to 24.932906,
-                    isAnimating = false
+                    isAnimating = false,
                 )
             }
         }
@@ -97,14 +96,16 @@ class AnimatedLocationDisplayTest {
 
     @Test
     fun handlesLongAddressText() {
-        val longAddress = "This is a very long address that should still be displayed properly within the component bounds without causing layout issues"
+        val longAddress =
+            "This is a very long address that should still be displayed properly " +
+                "within the component bounds without causing layout issues"
 
         composeTestRule.setContent {
             MaterialTheme {
                 AnimatedLocationDisplay(
                     address = longAddress,
                     coordinates = 60.170005 to 24.935105,
-                    isAnimating = true
+                    isAnimating = true,
                 )
             }
         }

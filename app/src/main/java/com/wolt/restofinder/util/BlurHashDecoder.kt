@@ -7,7 +7,6 @@ import kotlin.math.pow
 import kotlin.math.withSign
 
 object BlurHashDecoder {
-
     // cache Math.cos() calculations to improve performance.
     // The number of calculations can be huge for many bitmaps: width * height * numCompX * numCompY * 2 * nBitmaps
     // the cache is enabled by default, it is recommended to disable it only when just a few images are displayed
@@ -31,7 +30,13 @@ object BlurHashDecoder {
      *                 if the cache does not exist yet it will be created and populated with new calculations.
      *                 By default it is true.
      */
-    fun decode(blurHash: String?, width: Int, height: Int, punch: Float = 1f, useCache: Boolean = true): Bitmap? {
+    fun decode(
+        blurHash: String?,
+        width: Int,
+        height: Int,
+        punch: Float = 1f,
+        useCache: Boolean = true,
+    ): Bitmap? {
         if (blurHash == null || blurHash.length < 6) {
             return null
         }
@@ -43,20 +48,25 @@ object BlurHashDecoder {
         }
         val maxAcEnc = decode83(blurHash, 1, 2)
         val maxAc = (maxAcEnc + 1) / 166f
-        val colors = Array(numCompX * numCompY) { i ->
-            if (i == 0) {
-                val colorEnc = decode83(blurHash, 2, 6)
-                decodeDc(colorEnc)
-            } else {
-                val from = 4 + i * 2
-                val colorEnc = decode83(blurHash, from, from + 2)
-                decodeAc(colorEnc, maxAc * punch)
+        val colors =
+            Array(numCompX * numCompY) { i ->
+                if (i == 0) {
+                    val colorEnc = decode83(blurHash, 2, 6)
+                    decodeDc(colorEnc)
+                } else {
+                    val from = 4 + i * 2
+                    val colorEnc = decode83(blurHash, from, from + 2)
+                    decodeAc(colorEnc, maxAc * punch)
+                }
             }
-        }
         return composeBitmap(width, height, numCompX, numCompY, colors, useCache)
     }
 
-    private fun decode83(str: String, from: Int = 0, to: Int = str.length): Int {
+    private fun decode83(
+        str: String,
+        from: Int = 0,
+        to: Int = str.length,
+    ): Int {
         var result = 0
         for (i in from until to) {
             val index = charMap[str[i]] ?: -1
@@ -83,24 +93,29 @@ object BlurHashDecoder {
         }
     }
 
-    private fun decodeAc(value: Int, maxAc: Float): FloatArray {
+    private fun decodeAc(
+        value: Int,
+        maxAc: Float,
+    ): FloatArray {
         val r = value / (19 * 19)
         val g = (value / 19) % 19
         val b = value % 19
         return floatArrayOf(
             signedPow2((r - 9) / 9.0f) * maxAc,
             signedPow2((g - 9) / 9.0f) * maxAc,
-            signedPow2((b - 9) / 9.0f) * maxAc
+            signedPow2((b - 9) / 9.0f) * maxAc,
         )
     }
 
     private fun signedPow2(value: Float) = value.pow(2f).withSign(value)
 
     private fun composeBitmap(
-        width: Int, height: Int,
-        numCompX: Int, numCompY: Int,
+        width: Int,
+        height: Int,
+        numCompX: Int,
+        numCompY: Int,
         colors: Array<FloatArray>,
-        useCache: Boolean
+        useCache: Boolean,
     ): Bitmap {
         // use an array for better performance when writing pixel colors
         val imageArray = IntArray(width * height)
@@ -130,7 +145,11 @@ object BlurHashDecoder {
         return Bitmap.createBitmap(imageArray, width, height, Bitmap.Config.ARGB_8888)
     }
 
-    private fun getArrayForCosinesY(calculate: Boolean, height: Int, numCompY: Int) = when {
+    private fun getArrayForCosinesY(
+        calculate: Boolean,
+        height: Int,
+        numCompY: Int,
+    ) = when {
         calculate -> {
             DoubleArray(height * numCompY).also {
                 cacheCosinesY[height * numCompY] = it
@@ -141,7 +160,11 @@ object BlurHashDecoder {
         }
     }
 
-    private fun getArrayForCosinesX(calculate: Boolean, width: Int, numCompX: Int) = when {
+    private fun getArrayForCosinesX(
+        calculate: Boolean,
+        width: Int,
+        numCompX: Int,
+    ) = when {
         calculate -> {
             DoubleArray(width * numCompX).also {
                 cacheCosinesX[width * numCompX] = it
@@ -155,7 +178,7 @@ object BlurHashDecoder {
         x: Int,
         numComp: Int,
         y: Int,
-        size: Int
+        size: Int,
     ): Double {
         if (calculate) {
             this[x + numComp * y] = cos(Math.PI * y * x / size)
@@ -172,14 +195,14 @@ object BlurHashDecoder {
         }
     }
 
-    private val charMap = listOf(
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-        'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-        'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-        'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '#', '$', '%', '*', '+', ',',
-        '-', '.', ':', ';', '=', '?', '@', '[', ']', '^', '_', '{', '|', '}', '~'
-    )
-        .mapIndexed { i, c -> c to i }
-        .toMap()
-
+    private val charMap =
+        listOf(
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '#', '$', '%', '*', '+', ',',
+            '-', '.', ':', ';', '=', '?', '@', '[', ']', '^', '_', '{', '|', '}', '~',
+        )
+            .mapIndexed { i, c -> c to i }
+            .toMap()
 }

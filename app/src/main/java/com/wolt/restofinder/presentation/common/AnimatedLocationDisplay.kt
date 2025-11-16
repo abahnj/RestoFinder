@@ -5,19 +5,15 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
@@ -28,11 +24,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -60,10 +54,10 @@ import timber.log.Timber
 @Composable
 fun AnimatedLocationDisplay(
     address: String,
-    coordinates: Pair<Double, Double>,  // (latitude, longitude)
+    coordinates: Pair<Double, Double>,
     modifier: Modifier = Modifier,
     isAnimating: Boolean = true,
-    locationKey: Any = Unit,  // Triggers animation reset when changed
+    locationKey: Any = Unit,
 ) {
     val progress = remember { Animatable(0f) }
     val primaryColor = Primary
@@ -73,11 +67,12 @@ fun AnimatedLocationDisplay(
     val isDarkMode = MaterialTheme.colorScheme.surface.luminance() < 0.5f
 
     // Adjust colors for dark mode visibility
-    val pathBackgroundColor = if (isDarkMode) {
-        PathBackgroundDark
-    } else {
-        PathBackgroundLight
-    }
+    val pathBackgroundColor =
+        if (isDarkMode) {
+            PathBackgroundDark
+        } else {
+            PathBackgroundLight
+        }
 
     // 10-second animation synced with ViewModel location emissions
     LaunchedEffect(locationKey, isAnimating) {
@@ -86,10 +81,11 @@ fun AnimatedLocationDisplay(
             Timber.d("Animation starting for location: $locationKey")
             progress.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = 10_000,
-                    easing = LinearEasing
-                )
+                animationSpec =
+                    tween(
+                        durationMillis = 10_000,
+                        easing = LinearEasing,
+                    ),
             )
             Timber.d("Animation completed for location: $locationKey")
         } else {
@@ -98,56 +94,60 @@ fun AnimatedLocationDisplay(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(96.dp)
-            .testTag("AnimatedLocationDisplay"),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .testTag("AnimatedLocationDisplay"),
+        contentAlignment = Alignment.Center,
     ) {
-        // Map background pattern - inverted in dark mode
+        // Map background pattern
         Icon(
             painter = painterResource(R.drawable.map_background),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier
-                .fillMaxWidth()
-                .then(
-                    if (isDarkMode) {
-                        Modifier.graphicsLayer {
-                            // Invert colors for dark mode
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.colorMatrix(
-                                androidx.compose.ui.graphics.ColorMatrix().apply {
-                                    setToScale(-1f, -1f, -1f, 1f)  // Invert RGB, keep Alpha
-                                    this[0, 4] = 255f  // Add offset to R
-                                    this[1, 4] = 255f  // Add offset to G
-                                    this[2, 4] = 255f  // Add offset to B
-                                }
-                            )
-                        }
-                    } else {
-                        Modifier
-                    }
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (isDarkMode) {
+                            Modifier.graphicsLayer {
+                                // Invert colors for dark mode
+                                colorFilter =
+                                    androidx.compose.ui.graphics.ColorFilter.colorMatrix(
+                                        androidx.compose.ui.graphics.ColorMatrix().apply {
+                                            setToScale(-1f, -1f, -1f, 1f) // Invert RGB, keep Alpha
+                                            this[0, 4] = 255f // Add offset to R
+                                            this[1, 4] = 255f // Add offset to G
+                                            this[2, 4] = 255f // Add offset to B
+                                        },
+                                    )
+                            }
+                        } else {
+                            Modifier
+                        },
+                    ),
         )
 
         // Content layer (centered address text with location pin)
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             // Address and coordinates
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = address,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.testTag("LocationAddress")
+                    modifier = Modifier.testTag("LocationAddress"),
                 )
 
                 Text(
@@ -155,7 +155,7 @@ fun AnimatedLocationDisplay(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.testTag("LocationCoordinates")
+                    modifier = Modifier.testTag("LocationCoordinates"),
                 )
             }
         }
@@ -165,10 +165,11 @@ fun AnimatedLocationDisplay(
             imageVector = Icons.Default.KeyboardArrowDown,
             contentDescription = "Expand location",
             tint = primaryColor,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .size(28.dp)
-                .testTag("LocationChevron")
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .size(28.dp)
+                    .testTag("LocationChevron"),
         )
 
         // Animated border overlay
@@ -183,23 +184,25 @@ fun AnimatedLocationDisplay(
             val cutoutDepth = with(density) { 20.dp.toPx() }
 
             // Create the border path
-            val path = createMapBackgroundPath(
-                width = width,
-                height = height,
-                cornerRadius = cornerRadius,
-                inset = inset,
-                cutoutWidth = cutoutWidth,
-                cutoutDepth = cutoutDepth
-            )
+            val path =
+                createMapBackgroundPath(
+                    width = width,
+                    height = height,
+                    cornerRadius = cornerRadius,
+                    inset = inset,
+                    cutoutWidth = cutoutWidth,
+                    cutoutDepth = cutoutDepth,
+                )
 
             // Measure the path
-            val pathMeasure = PathMeasure().apply {
-                setPath(path.asAndroidPath(), false)
-            }
+            val pathMeasure =
+                PathMeasure().apply {
+                    setPath(path.asAndroidPath(), false)
+                }
             val pathLength = pathMeasure.length
             val animatedLength = pathLength * progress.value
 
-            // Extract the animated segment (the growing line)
+            // Extract the animated segment
             val animatedPath = android.graphics.Path()
             if (animatedLength > 0 && pathLength > 0) {
                 try {
@@ -209,15 +212,16 @@ fun AnimatedLocationDisplay(
                 }
             }
 
-            // 1. Draw the full background path (adapts to dark/light mode)
+            // 1. Draw the full background path
             drawPath(
                 path = path,
                 color = pathBackgroundColor,
-                style = Stroke(
-                    width = strokeWidth,
-                    cap = StrokeCap.Round,
-                    join = StrokeJoin.Round
-                )
+                style =
+                    Stroke(
+                        width = strokeWidth,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round,
+                    ),
             )
 
             // 2. Draw the animated line segment (primary blue)
@@ -225,19 +229,20 @@ fun AnimatedLocationDisplay(
                 drawPath(
                     path = animatedPath.asComposePath(),
                     color = primaryColor,
-                    style = Stroke(
-                        width = strokeWidth,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round
-                    )
+                    style =
+                        Stroke(
+                            width = strokeWidth,
+                            cap = StrokeCap.Round,
+                            join = StrokeJoin.Round,
+                        ),
                 )
             }
 
-            // 3. Draw the static dot at start position (left center)
+            // 3. Draw the static dot at start position
             drawCircle(
                 color = primaryColor,
                 radius = strokeWidth * 1.25f,
-                center = Offset(inset, height / 2f)
+                center = Offset(inset, height / 2f),
             )
         }
     }
@@ -252,7 +257,7 @@ private fun createMapBackgroundPath(
     cornerRadius: Float,
     inset: Float,
     cutoutWidth: Float,
-    cutoutDepth: Float
+    cutoutDepth: Float,
 ): Path {
     return Path().apply {
         // Calculate bounds with inset
@@ -264,27 +269,29 @@ private fun createMapBackgroundPath(
 
         // Ensure corner radius is valid (not larger than half the width/height)
         val maxCornerRadius = minOf(w / 2f, h / 2f)
-        val cr = (cornerRadius - inset)
-            .coerceAtMost(maxCornerRadius)
-            .coerceAtLeast(0f)
+        val cr =
+            (cornerRadius - inset)
+                .coerceAtMost(maxCornerRadius)
+                .coerceAtLeast(0f)
 
-        // START at left center (where the static dot is)
+        // Start at left center (where the static dot is)
         moveTo(inset, h / 2f + inset)
 
-        // Go UP to top-left corner
+        // Go up to top-left corner
         lineTo(inset, cr + inset)
 
         // Top-left corner arc
         arcTo(
-            rect = Rect(
-                left = inset,
-                top = inset,
-                right = cr * 2 + inset,
-                bottom = cr * 2 + inset
-            ),
+            rect =
+                Rect(
+                    left = inset,
+                    top = inset,
+                    right = cr * 2 + inset,
+                    bottom = cr * 2 + inset,
+                ),
             startAngleDegrees = 180f,
             sweepAngleDegrees = 90f,
-            forceMoveTo = false
+            forceMoveTo = false,
         )
 
         // Top edge to top-right corner
@@ -292,15 +299,16 @@ private fun createMapBackgroundPath(
 
         // Top-right corner arc
         arcTo(
-            rect = Rect(
-                left = w - cr * 2 + inset,
-                top = inset,
-                right = w + inset,
-                bottom = cr * 2 + inset
-            ),
+            rect =
+                Rect(
+                    left = w - cr * 2 + inset,
+                    top = inset,
+                    right = w + inset,
+                    bottom = cr * 2 + inset,
+                ),
             startAngleDegrees = 270f,
             sweepAngleDegrees = 90f,
-            forceMoveTo = false
+            forceMoveTo = false,
         )
 
         // Right edge down to bottom-right corner
@@ -308,15 +316,16 @@ private fun createMapBackgroundPath(
 
         // Bottom-right corner arc
         arcTo(
-            rect = Rect(
-                left = w - cr * 2 + inset,
-                top = h - cr * 2 + inset,
-                right = w + inset,
-                bottom = h + inset
-            ),
+            rect =
+                Rect(
+                    left = w - cr * 2 + inset,
+                    top = h - cr * 2 + inset,
+                    right = w + inset,
+                    bottom = h + inset,
+                ),
             startAngleDegrees = 0f,
             sweepAngleDegrees = 90f,
-            forceMoveTo = false
+            forceMoveTo = false,
         )
 
         // Bottom edge to cutout start (moving RIGHT TO LEFT)
@@ -324,22 +333,27 @@ private fun createMapBackgroundPath(
 
         // Right side curve: from cutoutEnd to centerX
         cubicTo(
-            x1 = cutoutEnd - cutoutWidth * 0.169f,  // 33.8% of half-width inward
-            y1 = h + inset,  // stays at bottom
-            x2 = centerX + cutoutWidth * 0.255f,  // 51% of half-width from center
-            y2 = h - cutoutDepth + inset,  // at cutout top
+            x1 = cutoutEnd - cutoutWidth * 0.169f,
+            // stays at bottom
+            y1 = h + inset,
+            x2 = centerX + cutoutWidth * 0.255f,
+            // at cutout top
+            y2 = h - cutoutDepth + inset,
             x3 = centerX,
-            y3 = h - cutoutDepth + inset
+            y3 = h - cutoutDepth + inset,
         )
 
         // Left side curve: from centerX to cutoutStart (smooth/reflected)
         cubicTo(
-            x1 = centerX - cutoutWidth * 0.255f,  // reflected from right CP2
-            y1 = h - cutoutDepth + inset,  // at cutout top
-            x2 = cutoutStart + cutoutWidth * 0.183f,  // 36.6% of half-width inward
-            y2 = h + inset,  // back to bottom
+            // reflected from right CP2
+            x1 = centerX - cutoutWidth * 0.255f,
+            // at cutout top
+            y1 = h - cutoutDepth + inset,
+            x2 = cutoutStart + cutoutWidth * 0.183f,
+            // back to bottom
+            y2 = h + inset,
             x3 = cutoutStart,
-            y3 = h + inset
+            y3 = h + inset,
         )
 
         // Continue bottom edge to bottom-left corner
@@ -347,18 +361,19 @@ private fun createMapBackgroundPath(
 
         // Bottom-left corner arc
         arcTo(
-            rect = Rect(
-                left = inset,
-                top = h - cr * 2 + inset,
-                right = cr * 2 + inset,
-                bottom = h + inset
-            ),
+            rect =
+                Rect(
+                    left = inset,
+                    top = h - cr * 2 + inset,
+                    right = cr * 2 + inset,
+                    bottom = h + inset,
+                ),
             startAngleDegrees = 90f,
             sweepAngleDegrees = 90f,
-            forceMoveTo = false
+            forceMoveTo = false,
         )
 
-        // Left edge back UP to start (center-left)
+        // Left edge back up to start (center-left)
         lineTo(inset, h / 2f + inset)
 
         // Close the path to complete the loop
@@ -373,7 +388,7 @@ private fun AnimatedLocationDisplayPreview() {
         AnimatedLocationDisplay(
             address = "Kanavaranta 7 F, 00160 Helsinki",
             coordinates = 60.169418 to 24.931618,
-            isAnimating = true
+            isAnimating = true,
         )
     }
 }
@@ -385,7 +400,7 @@ private fun AnimatedLocationDisplayStaticPreview() {
         AnimatedLocationDisplay(
             address = "Discovering restaurants nearby...",
             coordinates = 0.0 to 0.0,
-            isAnimating = false
+            isAnimating = false,
         )
     }
 }
@@ -397,19 +412,24 @@ private fun AnimatedLocationDisplayLongAddressPreview() {
         AnimatedLocationDisplay(
             address = "Very Long Street Name 123 A, 12345 City With Long Name",
             coordinates = 60.170005 to 24.935105,
-            isAnimating = true
+            isAnimating = true,
         )
     }
 }
 
-@Preview(name = "Dark Mode", showBackground = true, backgroundColor = 0xFF1C1B1F, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    backgroundColor = 0xFF1C1B1F,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
 private fun AnimatedLocationDisplayDarkPreview() {
     RestoFinderTheme(darkTheme = true) {
         AnimatedLocationDisplay(
             address = "Kanavaranta 7 F, 00160 Helsinki",
             coordinates = 60.169418 to 24.931618,
-            isAnimating = true
+            isAnimating = true,
         )
     }
 }

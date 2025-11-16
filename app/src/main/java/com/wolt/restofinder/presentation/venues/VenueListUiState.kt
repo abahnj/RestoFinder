@@ -8,10 +8,10 @@ sealed class VenueListUiState {
 
     data class Success(
         val venues: List<Venue>,
-        val currentLocation: Location
+        val currentLocation: Location,
     ) : VenueListUiState()
 
     data class Error(
-        val message: String
+        val message: String,
     ) : VenueListUiState()
 }

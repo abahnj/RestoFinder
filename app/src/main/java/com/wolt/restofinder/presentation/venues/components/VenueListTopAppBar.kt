@@ -44,56 +44,60 @@ fun VenueListTopAppBar(
     onSearchClick: () -> Unit,
     onCartClick: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
             ) {
                 // Left side: Profile + Greeting
                 Row(
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                 ) {
                     // Profile picture placeholder
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Profile",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(8.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        modifier =
+                            Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(8.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
 
                     Spacer(modifier = Modifier.width(12.dp))
 
                     // Greeting text with two-tone styling
                     Text(
-                        text = buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    color = GreetingSecondary,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Normal
-                                )
-                            ) {
-                                append("Let's eat, ")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            ) {
-                                append(userName)
-                            }
-                        },
-                        style = MaterialTheme.typography.titleLarge
+                        text =
+                            buildAnnotatedString {
+                                withStyle(
+                                    style =
+                                        SpanStyle(
+                                            color = GreetingSecondary,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Normal,
+                                        ),
+                                ) {
+                                    append("Let's eat, ")
+                                }
+                                withStyle(
+                                    style =
+                                        SpanStyle(
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                ) {
+                                    append(userName)
+                                }
+                            },
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
 
@@ -103,7 +107,7 @@ fun VenueListTopAppBar(
                         Icon(
                             painter = painterResource(R.drawable.search),
                             contentDescription = "Search",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                     }
 
@@ -111,18 +115,19 @@ fun VenueListTopAppBar(
                         Icon(
                             painter = painterResource(R.drawable.shopping_cart),
                             contentDescription = "Cart",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
             }
         },
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        modifier = modifier
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        modifier = modifier,
     )
 }
 
@@ -137,7 +142,7 @@ private fun VenueListTopAppBarPreview() {
             userName = "Abah",
             onSearchClick = {},
             onCartClick = {},
-            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         )
     }
 }

@@ -6,5 +6,5 @@ data class Venue(
     val description: String?,
     val blurHash: String,
     val imageUrl: String,
-    val isFavourite: Boolean = false
+    val isFavourite: Boolean = false,
 )

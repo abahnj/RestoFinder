@@ -35,26 +35,28 @@ fun EmptyState(
     title: String = stringResource(R.string.empty_state_no_restaurants),
     subtitle: String = stringResource(R.string.empty_state_try_different_location),
     icon: ImageVector = Icons.Default.SearchOff,
-    iconContentDescription: String? = stringResource(R.string.empty_state_icon_description)
+    iconContentDescription: String? = stringResource(R.string.empty_state_icon_description),
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .testTag("EmptyState")
-            .semantics {
-                contentDescription = "$title. $subtitle"
-            },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .testTag("EmptyState")
+                .semantics {
+                    contentDescription = "$title. $subtitle"
+                },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = iconContentDescription,
-            modifier = Modifier
-                .size(64.dp)
-                .testTag("EmptyStateIcon"),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .testTag("EmptyStateIcon"),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -64,7 +66,7 @@ fun EmptyState(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
-            modifier = Modifier.testTag("EmptyStateTitle")
+            modifier = Modifier.testTag("EmptyStateTitle"),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +76,7 @@ fun EmptyState(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier.testTag("EmptyStateSubtitle")
+            modifier = Modifier.testTag("EmptyStateSubtitle"),
         )
     }
 }
@@ -98,7 +100,7 @@ private fun EmptyStateCustomPreview() {
             EmptyState(
                 title = "No Favorites Yet",
                 subtitle = "Tap the heart icon to save your favorite restaurants",
-                icon = Icons.Default.FavoriteBorder
+                icon = Icons.Default.FavoriteBorder,
             )
         }
     }

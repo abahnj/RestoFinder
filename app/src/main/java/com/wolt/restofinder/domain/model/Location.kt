@@ -2,5 +2,5 @@ package com.wolt.restofinder.domain.model
 
 data class Location(
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
 )

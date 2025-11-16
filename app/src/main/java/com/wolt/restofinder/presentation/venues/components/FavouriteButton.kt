@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
@@ -35,7 +34,7 @@ fun FavouriteButton(
     isFavourite: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     val haptic = LocalHapticFeedback.current
     val scale = remember { Animatable(1f) }
@@ -46,29 +45,32 @@ fun FavouriteButton(
             // Pulse sequence: scale up then back to normal
             scale.animateTo(
                 targetValue = 1.4f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
+                animationSpec =
+                    spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow,
+                    ),
             )
             scale.animateTo(
                 targetValue = 1f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
+                animationSpec =
+                    spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow,
+                    ),
             )
         }
         previousFavourite = isFavourite
     }
 
     val iconColor by animateColorAsState(
-        targetValue = if (isFavourite) {
-            FavoriteRed
-        } else {
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        },
-        label = "FavouriteButtonColor"
+        targetValue =
+            if (isFavourite) {
+                FavoriteRed
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            },
+        label = "FavouriteButtonColor",
     )
 
     IconButton(
@@ -77,29 +79,34 @@ fun FavouriteButton(
             onClick()
         },
         enabled = enabled,
-        modifier = modifier
-            .testTag("FavouriteButton")
-            .semantics {
-                contentDescription = if (isFavourite) {
-                    "Remove from favourites"
-                } else {
-                    "Add to favourites"
-                }
-            },
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = iconColor
-        )
+        modifier =
+            modifier
+                .testTag("FavouriteButton")
+                .semantics {
+                    contentDescription =
+                        if (isFavourite) {
+                            "Remove from favourites"
+                        } else {
+                            "Add to favourites"
+                        }
+                },
+        colors =
+            IconButtonDefaults.iconButtonColors(
+                contentColor = iconColor,
+            ),
     ) {
         Icon(
-            imageVector = if (isFavourite) {
-                Icons.Filled.Favorite
-            } else {
-                Icons.Outlined.FavoriteBorder
-            },
+            imageVector =
+                if (isFavourite) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Outlined.FavoriteBorder
+                },
             contentDescription = null,
-            modifier = Modifier
-                .size(24.dp)
-                .scale(scale.value)
+            modifier =
+                Modifier
+                    .size(24.dp)
+                    .scale(scale.value),
         )
     }
 }

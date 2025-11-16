@@ -1,25 +1,14 @@
 package com.wolt.restofinder.presentation.common
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.assertContentDescriptionContains
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -28,7 +17,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class StateComponentsTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -99,7 +87,7 @@ class StateComponentsTest {
             MaterialTheme {
                 ErrorState(
                     message = "Network error occurred",
-                    onRetry = {}
+                    onRetry = {},
                 )
             }
         }
@@ -123,7 +111,7 @@ class StateComponentsTest {
                 ErrorState(
                     title = "Connection Failed",
                     message = "Please check your internet",
-                    onRetry = {}
+                    onRetry = {},
                 )
             }
         }
@@ -141,7 +129,7 @@ class StateComponentsTest {
             MaterialTheme {
                 ErrorState(
                     message = "Error",
-                    onRetry = { retryCount++ }
+                    onRetry = { retryCount++ },
                 )
             }
         }
@@ -160,7 +148,7 @@ class StateComponentsTest {
             MaterialTheme {
                 ErrorState(
                     message = "Error",
-                    onRetry = { retryCount++ }
+                    onRetry = { retryCount++ },
                 )
             }
         }
@@ -180,7 +168,7 @@ class StateComponentsTest {
                 ErrorState(
                     message = "Feature not available",
                     onRetry = {},
-                    showRetryButton = false
+                    showRetryButton = false,
                 )
             }
         }

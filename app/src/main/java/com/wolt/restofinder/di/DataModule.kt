@@ -20,21 +20,20 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
+    @Provides
+    @Singleton
+    fun provideDataStore(
+        @ApplicationContext context: Context,
+    ): DataStore<Preferences> = context.dataStore
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> = context.dataStore
-
-    @Provides
-    @Singleton
-    fun provideFavouritesDataStore(dataStore: DataStore<Preferences>): FavouritesDataStore =
-        FavouritesDataStore(dataStore)
+    fun provideFavouritesDataStore(dataStore: DataStore<Preferences>): FavouritesDataStore = FavouritesDataStore(dataStore)
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataBindsModule {
-
     @Binds
     @Singleton
     abstract fun bindLocationRepository(impl: LocationRepositoryImpl): LocationRepository

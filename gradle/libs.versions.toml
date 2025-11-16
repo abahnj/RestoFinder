@@ -17,7 +17,7 @@ ksp = "2.2.21-2.0.4"
 
 # Networking
 retrofit = "3.0.0"
-okhttp = "5.3.0"
+okhttp = "5.3.1"
 kotlinxSerializationJson = "1.9.0"
 retrofitSerializationConverter = "1.0.0"
 
@@ -41,9 +41,12 @@ espressoCore = "3.7.0"
 mockk = "1.14.6"
 turbine = "1.2.1"
 coroutinesTest = "1.10.2"
-mockwebserver = "5.3.0"
+mockwebserver = "5.3.1"
 hiltTesting = "2.57.2"
 jacoco = "0.8.14"
+
+# Code Quality
+ktlint = "12.1.2"
 
 [libraries]
 # AndroidX Core
@@ -109,3 +112,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

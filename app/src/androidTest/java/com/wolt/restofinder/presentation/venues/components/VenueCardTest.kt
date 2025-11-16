@@ -18,18 +18,18 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class VenueCardTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val baseVenue = Venue(
-        id = "venue123",
-        name = "Test Restaurant",
-        description = "Great food here",
-        blurHash = "LEHV6nWB2yk8",
-        imageUrl = "https://example.com/image.jpg",
-        isFavourite = false
-    )
+    private val baseVenue =
+        Venue(
+            id = "venue123",
+            name = "Test Restaurant",
+            description = "Great food here",
+            blurHash = "LEHV6nWB2yk8",
+            imageUrl = "https://example.com/image.jpg",
+            isFavourite = false,
+        )
 
     // MARK: - Display Tests
 
@@ -39,7 +39,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = baseVenue,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -63,7 +63,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = venueWithoutDescription,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -85,7 +85,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = venueWithEmptyDescription,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -104,7 +104,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = venueWithLongName,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -117,16 +117,17 @@ class VenueCardTest {
 
     @Test
     fun handlesSpecialCharactersInText() {
-        val specialVenue = baseVenue.copy(
-            name = "Café & Restaurant \"Special\"",
-            description = "Food with <html> & symbols: €£¥"
-        )
+        val specialVenue =
+            baseVenue.copy(
+                name = "Café & Restaurant \"Special\"",
+                description = "Food with <html> & symbols: €£¥",
+            )
 
         composeTestRule.setContent {
             MaterialTheme {
                 VenueCard(
                     venue = specialVenue,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -152,7 +153,7 @@ class VenueCardTest {
                     venue = baseVenue,
                     onFavouriteClick = { venueId ->
                         clickedVenueId = venueId
-                    }
+                    },
                 )
             }
         }
@@ -174,7 +175,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = favouritedVenue,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
@@ -192,7 +193,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = baseVenue,
-                    onFavouriteClick = { clickCount++ }
+                    onFavouriteClick = { clickCount++ },
                 )
             }
         }
@@ -215,7 +216,7 @@ class VenueCardTest {
             MaterialTheme {
                 VenueCard(
                     venue = baseVenue,
-                    onFavouriteClick = {}
+                    onFavouriteClick = {},
                 )
             }
         }
