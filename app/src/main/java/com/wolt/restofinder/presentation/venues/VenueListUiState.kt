@@ -13,7 +13,5 @@ sealed class VenueListUiState {
 
     data class Error(
         val message: String
-        // Note: Retry always available. If adding connectivity checks in future,
-        // add canRetry: Boolean to disable retry when offline is detected.
     ) : VenueListUiState()
 }
