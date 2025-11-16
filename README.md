@@ -110,4 +110,33 @@ make view-coverage
 
 ## Notes from the applicant
 
-> Please write here if you want to explain the choices you made on the way :).
+### Key Assumptions
+
+**Offline Strategy**
+- Requirements don't specify caching behavior when offline
+- Decision: Show error state, no caching (confirmed with Wolt team)
+- Rationale: User is moving - stale location data from other areas isn't useful
+- Production: Would add Room with short TTL if needed
+
+**Favourite State Persistence**
+- Favourites stored in DataStore (persists across app restarts)
+- Reactive: UI updates instantly when toggled without refetching venues
+- Works offline since it's independent of network layer
+
+**Location Simulation**
+- Hardcoded coordinates cycle every 10 seconds (no real GPS)
+- Production: Would use FusedLocationProviderClient
+
+**Animation Interpretation**
+- "Smooth transition" implemented as 500ms Crossfade + LazyColumn animateItemPlacement
+- Border animation on location display synced with 10-second interval
+
+**Image Handling**
+- BlurHash placeholders (vendored decoder from Wolt ecosystem)
+- Fallback to shimmer if blurhash unavailable
+- Images sized to 800x400 to avoid loading full resolution
+
+**Scope Boundaries**
+- Focused on core requirements only (no search, filters, pagination)
+- Portrait mode only (per FAQ)
+- 80%+ test coverage target
