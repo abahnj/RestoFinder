@@ -61,7 +61,7 @@ class VenueListViewModelTest {
     @Test
     fun `location update triggers venue fetch`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
 
@@ -86,7 +86,7 @@ class VenueListViewModelTest {
     @Test
     fun `successful fetch emits Success state`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
 
@@ -112,7 +112,7 @@ class VenueListViewModelTest {
     fun `network error emits Error state`() =
         runTest {
             val exception = IOException("Network error")
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.failure(exception))
 
@@ -136,7 +136,7 @@ class VenueListViewModelTest {
     @Test
     fun `toggleFavourite calls use case when in Success state`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
             coEvery { mockToggleFavouriteUseCase("1") } returns Result.success(Unit)
@@ -164,7 +164,7 @@ class VenueListViewModelTest {
     @Test
     fun `toggleFavourite emits snackbar when adding to favourites`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
             coEvery { mockToggleFavouriteUseCase("1") } returns Result.success(Unit)
@@ -199,7 +199,7 @@ class VenueListViewModelTest {
             val favouriteVenue = testVenues[0].copy(isFavourite = true)
             val venuesWithFavourite = listOf(favouriteVenue) + testVenues.drop(1)
 
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(venuesWithFavourite))
             coEvery { mockToggleFavouriteUseCase("1") } returns Result.success(Unit)
@@ -231,7 +231,7 @@ class VenueListViewModelTest {
     @Test
     fun `toggleFavourite emits error snackbar on failure`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
             coEvery { mockToggleFavouriteUseCase("1") } returns Result.failure(IOException("DataStore error"))
@@ -284,7 +284,7 @@ class VenueListViewModelTest {
     @Test
     fun `retry refetches venues at current location`() =
         runTest {
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
 
@@ -316,7 +316,7 @@ class VenueListViewModelTest {
     fun `retry after error state refetches venues`() =
         runTest {
             val exception = IOException("Network error")
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
 
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(testLocation) } returnsMany listOf(
@@ -355,7 +355,7 @@ class VenueListViewModelTest {
             val location2 = Location(60.18, 24.94)
             val location3 = Location(60.19, 24.95)
 
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
 
@@ -394,7 +394,7 @@ class VenueListViewModelTest {
     fun `catch block handles unexpected errors`() =
         runTest {
             val exception = RuntimeException("Unexpected error")
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(testLocation) } returns
                 flowOf(Result.success(testVenues)).map { throw exception }
@@ -422,7 +422,7 @@ class VenueListViewModelTest {
             val location1 = Location(60.17, 24.93)
             val location2 = Location(60.18, 24.94)
 
-            val locationFlow = MutableSharedFlow<Location>(replay = 0)
+            val locationFlow = MutableSharedFlow<Location>(replay = 1)
             every { mockObserveLocationUpdatesUseCase(any()) } returns locationFlow
             every { mockGetNearbyVenuesUseCase(any()) } returns flowOf(Result.success(testVenues))
 
