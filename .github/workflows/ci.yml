@@ -45,11 +45,12 @@ jobs:
         id: coverage
         run: |
           # Extract coverage percentage from JaCoCo XML report
-          COVERAGE=$(grep -oP 'type="LINE".*?missed="\K\d+' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | head -1 || echo "0")
-          TOTAL=$(grep -oP 'type="LINE".*?covered="\K\d+' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | head -1 || echo "0")
+          MISSED=$(grep -oP 'type="LINE".*?missed="\K\d+' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | tail -1 || echo "0")
+          COVERED=$(grep -oP 'type="LINE".*?covered="\K\d+' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | tail -1 || echo "0")
+          TOTAL=$((MISSED + COVERED))
 
           if [ "$TOTAL" -gt 0 ]; then
-            PERCENTAGE=$(awk "BEGIN {printf \"%.2f\", (($TOTAL - $COVERAGE) / $TOTAL) * 100}")
+            PERCENTAGE=$(awk "BEGIN {printf \"%.2f\", ($COVERED / $TOTAL) * 100}")
           else
             PERCENTAGE="0.00"
           fi
